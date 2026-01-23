@@ -15,8 +15,5 @@ return {
 			},
 		},
 	},
-	{
-		"nvim-treesitter/nvim-treesitter-textobjects",
-		branch = "main",
-	},
+	-- TODO: somehow get treesitter-textobjects working. Tried with the lazyvim setup but without success
 }
