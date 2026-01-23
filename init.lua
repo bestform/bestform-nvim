@@ -18,6 +18,7 @@ rtp:prepend(lazypath)
 require("lazy").setup({
 	require("plugins/treesitter"),
 	require("plugins/mason"),
+	require("plugins/mini"),
 	require("plugins/snacks"),
 	require("plugins/persistence"),
 	require("plugins/whichkey"),
@@ -31,6 +32,7 @@ require("lazy").setup({
 	require("plugins/trouble"),
 	require("plugins/noice"),
 	require("plugins/lualine"),
+	require("plugins/treesj"),
 })
 
 -- KEYMAPS
@@ -39,6 +41,7 @@ require("keymaps.git")
 require("keymaps.lsp")
 require("keymaps.neotree")
 require("keymaps.telescope")
+require("keymaps.treesj")
 
 -- SCHEME
 vim.cmd("colorscheme kanagawa-wave")
