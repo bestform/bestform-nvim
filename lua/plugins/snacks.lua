@@ -25,7 +25,7 @@ return {
 | |_ ___ ___| |_|  _|___ ___ _____ 
 | . | -_|_ -|  _|  _| . |  _|     |
 |___|___|___|_| |_| |___|_| |_|_|_|
-                                vim
+                               nvim
  ]],
         -- stylua: ignore
         ---@type snacks.dashboard.Item[]
