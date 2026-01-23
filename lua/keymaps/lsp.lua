@@ -1,0 +1,6 @@
+vim.keymap.set("n", "<leader>cr", vim.lsp.buf.rename, { desc = "[R]e[n]ame" })
+vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, { desc = "[G]oto Code [A]ction" })
+vim.keymap.set("n", "gr", require("telescope.builtin").lsp_references, { desc = "[G]oto [R]eferences" })
+vim.keymap.set("n", "gi", require("telescope.builtin").lsp_implementations, { desc = "[G]oto [I]mplementation" })
+vim.keymap.set("n", "gd", require("telescope.builtin").lsp_definitions, { desc = "[G]oto [D]efinition" })
+vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { desc = "[G]oto [D]eclaration" })

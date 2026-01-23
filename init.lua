@@ -1,8 +1,7 @@
 require("options")
 require("autocommands")
 
--- [[ Install `lazy.nvim` plugin manager ]]
---    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
+-- LAZY
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
 	local lazyrepo = "https://github.com/folke/lazy.nvim.git"
@@ -11,14 +10,15 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 		error("Error cloning lazy.nvim:\n" .. out)
 	end
 end
-
 ---@type vim.Option
 local rtp = vim.opt.rtp
-
 rtp:prepend(lazypath)
 
 -- PLUGINS
 require("lazy").setup({
+	require("plugins/mason"),
+	require("plugins/snacks"),
+	require("plugins/persistence"),
 	require("plugins/whichkey"),
 	require("plugins/flash"),
 	require("plugins/themes"),
@@ -27,7 +27,17 @@ require("lazy").setup({
 	require("plugins/conform"),
 	require("plugins/blink"),
 	require("plugins/lsp"),
+	require("plugins/trouble"),
+	require("plugins/noice"),
+	require("plugins/lualine"),
 })
 
+-- KEYMAPS
+require("keymaps.misc")
+require("keymaps.git")
+require("keymaps.lsp")
+require("keymaps.neotree")
+require("keymaps.telescope")
+
+-- SCHEME
 vim.cmd("colorscheme kanagawa-wave")
-require("keymaps")
