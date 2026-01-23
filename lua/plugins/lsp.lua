@@ -2,7 +2,10 @@ return {
 	-- Main LSP Configuration
 	"neovim/nvim-lspconfig",
 	dependencies = {
-		{ "mason-org/mason.nvim", opts = {} },
+		{
+			"mason-org/mason.nvim",
+			opts = {},
+		},
 		"mason-org/mason-lspconfig.nvim",
 		"WhoIsSethDaniel/mason-tool-installer.nvim",
 
@@ -49,8 +52,6 @@ return {
 			end,
 		})
 
-		-- Diagnostic Config
-		-- See :help vim.diagnostic.Opts
 		vim.diagnostic.config({
 			severity_sort = true,
 			float = { border = "rounded", source = "if_many" },
