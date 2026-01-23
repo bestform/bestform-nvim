@@ -16,6 +16,7 @@ rtp:prepend(lazypath)
 
 -- PLUGINS
 require("lazy").setup({
+	require("plugins/treesitter"),
 	require("plugins/mason"),
 	require("plugins/snacks"),
 	require("plugins/persistence"),
