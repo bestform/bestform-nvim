@@ -1,14 +1,10 @@
+```
  _           _   ___               
-
 | |_ ___ ___| |_|  _|___ ___ _____ 
-
 | . | -_|_ -|  _|  _| . |  _|     |
-
 |___|___|___|_| |_| |___|_| |_|_|_|
-
                                nvim
-                               
-
+```
 ---
 
 This is my personal neovim configuration I use on a daily basis.
