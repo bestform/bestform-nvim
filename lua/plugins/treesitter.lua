@@ -15,5 +15,4 @@ return {
 			},
 		},
 	},
-	-- TODO: somehow get treesitter-textobjects working. Tried with the lazyvim setup but without success
 }

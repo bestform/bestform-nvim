@@ -2,6 +2,8 @@ return {
 	{
 		"nvim-mini/mini.ai",
 		version = "*",
-		opt = {},
+		init = function()
+			require("mini.ai").setup()
+		end,
 	},
 }
