@@ -33,6 +33,7 @@ require("lazy").setup({
 	require("plugins.noice"),
 	require("plugins.lualine"),
 	require("plugins.treesj"),
+	require("plugins.harpoon"),
 })
 
 -- KEYMAPS
@@ -42,6 +43,7 @@ require("keymaps.lsp")
 require("keymaps.neotree")
 require("keymaps.telescope")
 require("keymaps.treesj")
+require("keymaps.harpoon")
 
 -- SCHEME
 vim.cmd("colorscheme kanagawa-wave")
