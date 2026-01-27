@@ -6,4 +6,4 @@ vim.keymap.set("n", "<leader>sh", builtin.help_tags, { desc = "Telescope help ta
 vim.keymap.set("n", "<leader>sk", builtin.keymaps, { desc = "Telescope keymaps" })
 vim.keymap.set("n", "<leader>st", function()
 	builtin.grep_string({ search = "TODO:" })
-end, { desc = "Telescope keymaps" })
+end, { desc = "Telescope TODOs" })
