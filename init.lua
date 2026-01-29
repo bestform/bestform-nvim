@@ -34,6 +34,7 @@ require("lazy").setup({
 	require("plugins.lualine"),
 	require("plugins.treesj"),
 	require("plugins.harpoon"),
+	require("plugins.tserrortranslator"),
 })
 
 -- KEYMAPS
