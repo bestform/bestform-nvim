@@ -1,6 +1,4 @@
--- TODO: do we even need nvim-lspconfig? we might be able to configure our lsps natively and just use mason to install them
 return {
-	-- Main LSP Configuration
 	"neovim/nvim-lspconfig",
 	dependencies = {
 		{

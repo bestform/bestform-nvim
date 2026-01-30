@@ -14,7 +14,6 @@ vim.schedule(function()
 	vim.o.clipboard = "unnamedplus"
 end)
 
--- TODO: understand what this is doing
 vim.o.breakindent = true
 
 vim.o.undofile = true
