@@ -14,4 +14,9 @@ vim.keymap.set("n", "<leader>cn", "<cmd>cnext<cr>", { desc = "Next quickfix item
 vim.keymap.set("n", "<leader>cp", "<cmd>cprev<cr>", { desc = "Previous quickfix item" })
 
 -- diagnostics
-vim.keymap.set("n", "<Leader>dd", ":lua vim.diagnostic.open_float()<CR>", { noremap = true, silent = true })
+vim.keymap.set(
+	"n",
+	"<Leader>dd",
+	":lua vim.diagnostic.open_float()<CR>",
+	{ noremap = true, silent = true, desc = "Open diagnostics in float" }
+)

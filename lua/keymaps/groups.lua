@@ -1,0 +1,7 @@
+local wk = require("which-key")
+wk.add({ "g", group = "LSP Goto" })
+wk.add({ "<leader>c", group = "LSP Code Actions" })
+wk.add({ "<leader>s", group = "Search" })
+wk.add({ "<leader>g", group = "Git" })
+wk.add({ "<leader>x", group = "Trouble" })
+wk.add({ "<leader>d", group = "Diagnostics" })

@@ -44,6 +44,7 @@ require("keymaps.neotree")
 require("keymaps.telescope")
 require("keymaps.treesj")
 require("keymaps.harpoon")
+require("keymaps.groups")
 
 -- SCHEME
 vim.cmd("colorscheme kanagawa-wave")
