@@ -16,9 +16,6 @@ return {
 
 		dashboard = {
 			preset = {
-				-- pick = function(cmd, opts)
-				-- 	return LazyVim.pick(cmd, opts)()
-				-- end,
 				header = [[
                                            
  _           _   ___               
