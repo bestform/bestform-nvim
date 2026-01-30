@@ -42,7 +42,12 @@ return {
 						},
 					},
 					{ "filetype", icon_only = true, separator = "", padding = { left = 1, right = 0 } },
-					-- { LazyVim.lualine.pretty_path() },
+					{
+						"filename",
+						cond = function()
+							return vim.fn.empty(vim.fn.expand("%:t")) ~= 1
+						end,
+					},
 				},
 				lualine_x = {
 					-- Snacks.nvim.profiler.status(),
