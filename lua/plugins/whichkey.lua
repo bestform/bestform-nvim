@@ -1,4 +1,3 @@
--- TODO: add groups
 return {
 	"folke/which-key.nvim",
 	event = "VimEnter",
