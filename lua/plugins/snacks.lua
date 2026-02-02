@@ -4,14 +4,6 @@ return {
 	lazy = false,
 	enabled = true,
 	opts = {
-		statuscolumn = {
-			enabled = true,
-			left = { "mark", "sign" },
-			right = { "fold", "git" },
-			git = {
-				patterns = { "GitSign", "MiniDiffSign" },
-			},
-		},
 		terminal = {
 			enabled = true,
 		},
