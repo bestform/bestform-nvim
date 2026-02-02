@@ -47,4 +47,10 @@ require("keymaps.harpoon")
 require("keymaps.wk_groups")
 
 -- SCHEME
-vim.cmd("colorscheme kanagawa-wave")
+
+-- kanagawa-wave
+-- vim.cmd("colorscheme kanagawa-wave")
+
+-- koda
+vim.cmd("colorscheme koda")
+vim.o.cursorline = false -- the cursor line does not look good in this theme

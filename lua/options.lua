@@ -34,7 +34,7 @@ vim.o.splitbelow = true
 -- for preview of substitutions
 vim.o.inccommand = "split"
 
-vim.o.cursorline = true
+vim.o.cursorline = false
 
 vim.o.scrolloff = 10
 
