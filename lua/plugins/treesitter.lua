@@ -15,12 +15,17 @@ return {
 				"go",
 			}
 
+			local filetypeMap = {
+				tsx = "typescriptreact",
+			}
+
 			local Ts = require("nvim-treesitter")
 			Ts.install(parsers)
 
 			for _, p in ipairs(parsers) do
+				local pattern = filetypeMap[p] or p
 				vim.api.nvim_create_autocmd("FileType", {
-					pattern = { p },
+					pattern = { pattern },
 					callback = function()
 						vim.treesitter.start()
 					end,
