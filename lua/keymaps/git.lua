@@ -1,3 +1,6 @@
 vim.keymap.set("n", "<leader>gg", function()
 	Snacks.lazygit()
 end, { desc = "LazyGit" })
+vim.keymap.set("n", "<leader>go", function()
+	require("mini.diff").toggle_overlay()
+end, { desc = "LazyGit" })
