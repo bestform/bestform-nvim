@@ -51,6 +51,7 @@ return {
 				expander_highlight = "NeoTreeExpander",
 			},
 			git_status = {
+				enabled = false,
 				symbols = {
 					unstaged = "󰄱",
 					staged = "󰱒",
