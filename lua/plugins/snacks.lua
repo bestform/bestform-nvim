@@ -7,6 +7,9 @@ return {
 		terminal = {
 			enabled = true,
 		},
+		lazygit = {
+			enabled = true,
+		},
 		scroll = {
 			animate = {
 				duration = { step = 15, total = 100 },
