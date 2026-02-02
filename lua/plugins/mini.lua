@@ -14,8 +14,8 @@ return {
 		version = "*",
 		opts = {
 			view = {
-				style = "sign",
-				signs = { add = "▎", change = "▎", delete = "▁" },
+				style = "number",
+				-- signs = { add = "▎", change = "▎", delete = "▁" },
 			},
 		},
 	},
