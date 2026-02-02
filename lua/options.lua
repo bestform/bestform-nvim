@@ -34,7 +34,7 @@ vim.o.splitbelow = true
 -- for preview of substitutions
 vim.o.inccommand = "split"
 
-vim.o.cursorline = false
+vim.o.cursorline = true
 
 vim.o.scrolloff = 10
 
@@ -48,3 +48,5 @@ vim.o.expandtab = true
 
 -- to make lualine full width. We also can hardcode `true` inside the lualine config
 vim.o.laststatus = 3
+
+vim.o.winborder = "rounded" -- careful! This is overwritten by noice. I leave it here so that is is set as I want when I remove noice

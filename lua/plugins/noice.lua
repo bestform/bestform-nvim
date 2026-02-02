@@ -9,6 +9,13 @@ return {
 				["cmp.entry.get_documentation"] = true,
 			},
 		},
+		views = {
+			hover = {
+				border = {
+					style = "rounded",
+				},
+			},
+		},
 		routes = {
 			{
 				filter = {
