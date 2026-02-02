@@ -22,7 +22,6 @@ require("lazy").setup({
 	require("plugins.persistence"),
 	require("plugins.whichkey"),
 	require("plugins.flash"),
-	require("plugins.themes"),
 	require("plugins.neotree"),
 	require("plugins.telescope"),
 	require("plugins.conform"),
@@ -34,6 +33,9 @@ require("lazy").setup({
 	require("plugins.treesj"),
 	require("plugins.harpoon"),
 	require("plugins.tserrortranslator"),
+	-- themes
+	require("themes.kanagawa"),
+	require("themes.koda"),
 })
 
 -- KEYMAPS
