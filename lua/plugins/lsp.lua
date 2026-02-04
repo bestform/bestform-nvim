@@ -41,7 +41,7 @@ return {
 			},
 		})
 
-		local ensure_installed = { "gopls", "vtsls", "lua-language-server", "stylua" }
+		local ensure_installed = { "eslint-lsp", "gopls", "vtsls", "lua-language-server", "stylua" }
 		require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 
 		local capabilities = require("blink.cmp").get_lsp_capabilities()
@@ -77,5 +77,17 @@ return {
 			},
 		})
 		vim.lsp.enable("lua_ls")
+
+		vim.lsp.config("eslint", {
+			settings = {
+				rulesCustomizations = {
+					{
+						rule = "*",
+						severity = "warn",
+					},
+				},
+			},
+		})
+		vim.lsp.enable("eslint")
 	end,
 }
