@@ -46,6 +46,7 @@ return {
 
 		local capabilities = require("blink.cmp").get_lsp_capabilities()
 
+		-- set typescript to sane formatting rules. Conform will pick this up
 		vim.lsp.config("vtsls", {
 			capabilities = capabilities,
 			settings = {
@@ -66,6 +67,7 @@ return {
 		})
 		vim.lsp.enable("vtsls")
 
+		-- ok, this is lua. I do not know why this replace setting was made. TODO: find this out. XD
 		vim.lsp.config("lua_ls", {
 			capabilities = capabilities,
 			settings = {
@@ -78,6 +80,7 @@ return {
 		})
 		vim.lsp.enable("lua_ls")
 
+		-- set all eslint errors to warning. Because what are we even doing here?
 		vim.lsp.config("eslint", {
 			settings = {
 				rulesCustomizations = {
@@ -88,6 +91,7 @@ return {
 				},
 			},
 		})
+
 		vim.lsp.enable("eslint")
 	end,
 }
