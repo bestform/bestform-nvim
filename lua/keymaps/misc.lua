@@ -14,6 +14,9 @@ vim.keymap.set("n", "<C-s>", "<cmd>w<cr>", { desc = "Save" })
 vim.keymap.set("n", "<leader>cn", "<cmd>cnext<cr>", { desc = "Next quickfix item" })
 vim.keymap.set("n", "<leader>cp", "<cmd>cprev<cr>", { desc = "Previous quickfix item" })
 
+--Lazy
+vim.keymap.set("n", "<leader>l", "<cmd>Lazy<cr>", { desc = "Lazy UI" })
+
 -- diagnostics
 vim.keymap.set(
 	"n",
