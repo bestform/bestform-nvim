@@ -53,3 +53,6 @@ vim.o.autoindent = true
 vim.o.laststatus = 3
 
 vim.o.winborder = "rounded" -- careful! This is overwritten by noice. I leave it here so that is is set as I want when I remove noice
+
+-- read changes made externally
+vim.o.autoread = true
