@@ -7,8 +7,8 @@ vim.o.number = true
 
 vim.o.mouse = "a"
 
--- enable this if we see the mode in the status line
--- vim.o.showmode = false
+-- do not show the mode as we already show it in out status line
+vim.o.showmode = false
 
 vim.schedule(function()
 	vim.o.clipboard = "unnamedplus"
