@@ -37,6 +37,7 @@ vim.o.inccommand = "split"
 vim.o.cursorline = true
 
 vim.o.scrolloff = 10
+vim.o.sidescrolloff = 10
 
 -- show dialog instead of failing when quitting without saving
 vim.o.confirm = true
