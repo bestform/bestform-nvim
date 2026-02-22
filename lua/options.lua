@@ -46,6 +46,8 @@ vim.o.confirm = true
 vim.o.tabstop = 2
 vim.o.shiftwidth = 2
 vim.o.expandtab = true
+vim.o.smartindent = true
+vim.o.autoindent = true
 
 -- to make lualine full width. We also can hardcode `true` inside the lualine config
 vim.o.laststatus = 3
