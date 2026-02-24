@@ -56,3 +56,5 @@ vim.o.winborder = "rounded" -- careful! This is overwritten by noice. I leave it
 
 -- read changes made externally
 vim.o.autoread = true
+
+vim.o.showtabline = 0
