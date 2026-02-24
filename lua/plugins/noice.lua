@@ -10,8 +10,9 @@ return {
 			},
 			signature = {
 				auto_open = {
-					enabled = false,
+					enabled = true,
 				},
+				view = "mini",
 			},
 		},
 		views = {
