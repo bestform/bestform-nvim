@@ -36,6 +36,7 @@ require("lazy").setup({
 	-- themes
 	require("themes.kanagawa"),
 	require("themes.koda"),
+	require("lua.themes.gruberdarker"),
 })
 
 -- KEYMAPS
@@ -55,4 +56,7 @@ require("keymaps.wk_groups")
 
 -- koda
 vim.cmd("colorscheme koda")
-vim.o.cursorline = false -- the cursor line does not look good in this theme
+-- vim.o.cursorline = false -- the cursor line does not look good in this theme
+
+-- gruber-darker
+-- vim.cmd("colorscheme gruber-darker")
