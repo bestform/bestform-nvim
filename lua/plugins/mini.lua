@@ -2,7 +2,12 @@ return {
 	{
 		"nvim-mini/mini.files",
 		version = "*",
-		opts = {},
+		opts = {
+			mappings = {
+				go_in = "L",
+				go_in_plus = "l",
+			},
+		},
 	},
 	{
 		"nvim-mini/mini.ai",
