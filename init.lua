@@ -48,6 +48,7 @@ require("keymaps.telescope")
 require("keymaps.treesj")
 require("keymaps.harpoon")
 require("keymaps.wk_groups")
+require("keymaps.mini")
 
 -- SCHEME
 
