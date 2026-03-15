@@ -93,5 +93,8 @@ return {
 		})
 
 		vim.lsp.enable("eslint")
+
+		-- gdscript
+		vim.lsp.enable("gdscript")
 	end,
 }
