@@ -36,7 +36,6 @@ require("lazy").setup({
 	-- themes
 	require("themes.kanagawa"),
 	require("themes.koda"),
-	require("lua.themes.gruberdarker"),
 })
 
 -- KEYMAPS
