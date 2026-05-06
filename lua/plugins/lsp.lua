@@ -50,6 +50,9 @@ return {
 		vim.lsp.config("vtsls", {
 			capabilities = capabilities,
 			settings = {
+				vtsls = {
+					autoUseWorkspaceTsdk = true,
+				},
 				typescript = {
 					preferences = {
 						quoteStyle = "single",
