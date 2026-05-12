@@ -7,8 +7,10 @@ vim.keymap.set("n", "<leader>sg", function()
 	builtin.live_grep(dropdown)
 end, { desc = "Telescope live grep" })
 vim.keymap.set("n", "<leader>,", function()
-	builtin.buffers(dropdown)
-end, { desc = "Telescope buffers" })
+	require("custom.recent_files").picker(vim.tbl_extend("force", dropdown, {
+		current_file = vim.api.nvim_buf_get_name(0),
+	}))
+end, { desc = "Recent files by view time" })
 vim.keymap.set("n", "<leader>sh", function()
 	builtin.help_tags(dropdown)
 end, { desc = "Telescope help tags" })
