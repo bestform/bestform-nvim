@@ -1,7 +1,7 @@
 package.path = vim.fn.getcwd() .. "/lua/?.lua;" .. vim.fn.getcwd() .. "/lua/?/init.lua;" .. package.path
 
-local session = require("explorer.session")
-local explorer = require("explorer.explorer")
+local session = require("trail.session")
+local view = require("trail.view")
 
 local function assert_equal(actual, expected, message)
 	if actual ~= expected then
@@ -16,7 +16,7 @@ local function assert_list_equal(actual, expected, message)
 	end
 end
 
-local temp = vim.fn.getcwd() .. "/explorer-expand-collapse-test"
+local temp = vim.fn.getcwd() .. "/trail-expand-collapse-test"
 vim.fn.delete(temp, "rf")
 vim.fn.mkdir(temp .. "/src/nested", "p")
 vim.fn.mkdir(temp .. "/test", "p")
@@ -38,20 +38,20 @@ end
 
 local source_win = vim.api.nvim_get_current_win()
 
-explorer.open()
-local explorer_win = vim.api.nvim_get_current_win()
+view.open()
+local trail_win = vim.api.nvim_get_current_win()
 
 local function get_lines()
-	return vim.api.nvim_buf_get_lines(vim.api.nvim_win_get_buf(explorer_win), 0, -1, false)
+	return vim.api.nvim_buf_get_lines(vim.api.nvim_win_get_buf(trail_win), 0, -1, false)
 end
 
 local function cursor(line)
-	vim.api.nvim_win_set_cursor(explorer_win, { line, 0 })
+	vim.api.nvim_win_set_cursor(trail_win, { line, 0 })
 end
 
 -- Initial: all expanded
 assert_list_equal(get_lines(), {
-	"explorer-expand-collapse-test/",
+	"trail-expand-collapse-test/",
 	"  src/",
 	"    nested/",
 	"      a.lua",
@@ -62,18 +62,18 @@ assert_list_equal(get_lines(), {
 
 -- Collapse src/ (line 2)
 cursor(2)
-explorer.collapse()
+view.collapse()
 assert_list_equal(get_lines(), {
-	"explorer-expand-collapse-test/",
+	"trail-expand-collapse-test/",
 	"  src/",
 	"  test/",
 	"    spec.lua",
 }, "src collapsed")
 
 -- h on collapsed src/ does nothing
-explorer.collapse()
+view.collapse()
 assert_list_equal(get_lines(), {
-	"explorer-expand-collapse-test/",
+	"trail-expand-collapse-test/",
 	"  src/",
 	"  test/",
 	"    spec.lua",
@@ -81,9 +81,9 @@ assert_list_equal(get_lines(), {
 
 -- l on expanded test/ does nothing
 cursor(3)
-explorer.expand_or_open()
+view.expand_or_open()
 assert_list_equal(get_lines(), {
-	"explorer-expand-collapse-test/",
+	"trail-expand-collapse-test/",
 	"  src/",
 	"  test/",
 	"    spec.lua",
@@ -91,15 +91,15 @@ assert_list_equal(get_lines(), {
 
 -- Collapse root (line 1)
 cursor(1)
-explorer.collapse()
+view.collapse()
 assert_list_equal(get_lines(), {
-	"explorer-expand-collapse-test/",
+	"trail-expand-collapse-test/",
 }, "root collapsed")
 
 -- Expand root (line 1)
-explorer.expand_or_open()
+view.expand_or_open()
 assert_list_equal(get_lines(), {
-	"explorer-expand-collapse-test/",
+	"trail-expand-collapse-test/",
 	"  src/",
 	"  test/",
 	"    spec.lua",
@@ -107,9 +107,9 @@ assert_list_equal(get_lines(), {
 
 -- Expand src/ (line 2)
 cursor(2)
-explorer.expand_or_open()
+view.expand_or_open()
 assert_list_equal(get_lines(), {
-	"explorer-expand-collapse-test/",
+	"trail-expand-collapse-test/",
 	"  src/",
 	"    nested/",
 	"      a.lua",
@@ -120,9 +120,9 @@ assert_list_equal(get_lines(), {
 
 -- h on a file does nothing
 cursor(4)
-explorer.collapse()
+view.collapse()
 assert_list_equal(get_lines(), {
-	"explorer-expand-collapse-test/",
+	"trail-expand-collapse-test/",
 	"  src/",
 	"    nested/",
 	"      a.lua",
@@ -133,13 +133,13 @@ assert_list_equal(get_lines(), {
 
 -- l on a file opens it in source window
 cursor(4)
-explorer.expand_or_open()
+view.expand_or_open()
 assert_equal(vim.api.nvim_get_current_win(), source_win, "l on file opens in source window")
 assert_equal(vim.api.nvim_buf_get_name(0), temp .. "/src/nested/a.lua", "l on file opens correct file")
 
 -- Cleanup
-explorer.close()
+view.close()
 session.reset()
 vim.fn.delete(temp, "rf")
 
-print("explorer_expand_collapse_spec: ok")
+print("trail_expand_collapse_spec: ok")

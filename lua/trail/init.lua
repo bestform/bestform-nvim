@@ -1,6 +1,6 @@
-local session = require("explorer.session")
-local explorer = require("explorer.explorer")
-local tracker = require("explorer.tracker")
+local session = require("trail.session")
+local view = require("trail.view")
+local tracker = require("trail.tracker")
 
 local M = {}
 local did_setup = false
@@ -8,12 +8,12 @@ local did_setup = false
 function M.start()
 	session.start()
 	session.record_buffer(0)
-	explorer.open()
+	view.open()
 end
 
 function M.stop()
 	session.stop()
-	explorer.render()
+	view.render()
 end
 
 function M.setup()

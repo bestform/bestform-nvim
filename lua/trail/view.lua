@@ -1,12 +1,12 @@
-local session = require("explorer.session")
-local tree = require("explorer.tree")
-local edges = require("explorer.edges")
+local session = require("trail.session")
+local tree = require("trail.tree")
+local edges = require("trail.edges")
 
 local M = {}
 
 local WIDTH = 40
-local namespace = vim.api.nvim_create_namespace("explorer-current-file")
-local edge_namespace = vim.api.nvim_create_namespace("explorer-edge-colors")
+local namespace = vim.api.nvim_create_namespace("trail-current-file")
+local edge_namespace = vim.api.nvim_create_namespace("trail-edge-colors")
 
 local state = {
 	bufnr = nil,
@@ -57,9 +57,9 @@ local function ensure_buffer()
 	state.bufnr = vim.api.nvim_create_buf(false, true)
 	vim.bo[state.bufnr].bufhidden = "hide"
 	vim.bo[state.bufnr].buftype = "nofile"
-	vim.bo[state.bufnr].filetype = "explorer"
+	vim.bo[state.bufnr].filetype = "trail"
 	vim.bo[state.bufnr].swapfile = false
-	vim.api.nvim_buf_set_name(state.bufnr, "Exploration")
+	vim.api.nvim_buf_set_name(state.bufnr, "Trail")
 
 	vim.keymap.set("n", "q", M.close, { buffer = state.bufnr, silent = true, nowait = true })
 	vim.keymap.set("n", "<CR>", M.open_selected, { buffer = state.bufnr, silent = true })

@@ -1,10 +1,10 @@
 ## Parent
 
-explorer-prd.md
+trail-prd.md
 
 ## Status
 
-Done — implemented in `lua/explorer/explorer.lua` and covered by `tests/explorer_expand_collapse_spec.lua`.
+Done — implemented in `lua/trail/view.lua` and covered by `tests/trail_expand_collapse_spec.lua`.
 
 ## What to build
 

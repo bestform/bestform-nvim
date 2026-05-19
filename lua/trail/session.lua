@@ -1,6 +1,6 @@
 local M = {}
 
-local edges = require("explorer.edges")
+local edges = require("trail.edges")
 
 local state = {
 	active = false,

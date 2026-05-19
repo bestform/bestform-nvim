@@ -1,7 +1,7 @@
 package.path = vim.fn.getcwd() .. "/lua/?.lua;" .. vim.fn.getcwd() .. "/lua/?/init.lua;" .. package.path
 
-local edges = require("explorer.edges")
-local session = require("explorer.session")
+local edges = require("trail.edges")
+local session = require("trail.session")
 
 local function assert_equal(actual, expected, message)
 	if actual ~= expected then
@@ -38,4 +38,4 @@ assert_equal(edges.strongest(session.get_record("/repo/src/b.lua").edges), "impl
 
 session.reset()
 
-print("explorer_edges_spec: ok")
+print("trail_edges_spec: ok")

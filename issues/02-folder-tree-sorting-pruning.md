@@ -1,6 +1,6 @@
 ## Parent
 
-explorer-prd.md
+trail-prd.md
 
 ## What to build
 
@@ -10,7 +10,7 @@ The tree is always fully expanded — no expand/collapse yet (that comes in a la
 
 ## Status
 
-Done — implemented by `lua/explorer/tree.lua`, rendered from `lua/explorer/explorer.lua`, and covered by `tests/explorer_tree_spec.lua`.
+Done — implemented by `lua/trail/tree.lua`, rendered from `lua/trail/view.lua`, and covered by `tests/trail_tree_spec.lua`.
 
 ## Acceptance criteria
 
@@ -24,4 +24,4 @@ Done — implemented by `lua/explorer/tree.lua`, rendered from `lua/explorer/exp
 
 ## Blocked by
 
-- 01-session-commands-flat-explorer
+- 01-session-commands-flat-trail

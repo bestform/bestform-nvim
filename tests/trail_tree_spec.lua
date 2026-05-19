@@ -1,6 +1,6 @@
 package.path = vim.fn.getcwd() .. "/lua/?.lua;" .. vim.fn.getcwd() .. "/lua/?/init.lua;" .. package.path
 
-local tree = require("explorer.tree")
+local tree = require("trail.tree")
 
 local function assert_equal(actual, expected, message)
 	if actual ~= expected then
@@ -64,4 +64,4 @@ assert_node(built, {
 
 assert_equal(built.children[1].children[2].path, "/repo/src/a.lua", "file path is preserved")
 
-print("explorer_tree_spec: ok")
+print("trail_tree_spec: ok")

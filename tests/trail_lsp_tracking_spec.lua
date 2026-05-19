@@ -1,7 +1,7 @@
 package.path = vim.fn.getcwd() .. "/lua/?.lua;" .. vim.fn.getcwd() .. "/lua/?/init.lua;" .. package.path
 
-local session = require("explorer.session")
-local tracker = require("explorer.tracker")
+local session = require("trail.session")
+local tracker = require("trail.tracker")
 
 local function assert_equal(actual, expected, message)
 	if actual ~= expected then
@@ -9,7 +9,7 @@ local function assert_equal(actual, expected, message)
 	end
 end
 
-local temp = vim.fn.getcwd() .. "/.explorer-lsp-tracking-test.lua"
+local temp = vim.fn.getcwd() .. "/.trail-lsp-tracking-test.lua"
 vim.fn.writefile({ "-- lsp target" }, temp)
 
 session.reset()
@@ -36,4 +36,4 @@ assert_equal(session.get_record(temp).edges.definition, 1, "definition handler r
 session.reset()
 vim.fn.delete(temp)
 
-print("explorer_lsp_tracking_spec: ok")
+print("trail_lsp_tracking_spec: ok")

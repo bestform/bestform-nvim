@@ -1,7 +1,7 @@
 package.path = vim.fn.getcwd() .. "/lua/?.lua;" .. vim.fn.getcwd() .. "/lua/?/init.lua;" .. package.path
 
-local session = require("explorer.session")
-local tracker = require("explorer.tracker")
+local session = require("trail.session")
+local tracker = require("trail.tracker")
 
 local function assert_equal(actual, expected, message)
 	if actual ~= expected then
@@ -16,14 +16,14 @@ local function assert_deep_equal(actual, expected, message)
 end
 
 -- Ensure tracker autocmds are fresh
-vim.api.nvim_create_augroup("explorer-tracker", { clear = true })
+vim.api.nvim_create_augroup("trail-tracker", { clear = true })
 local did_setup = false
 if not did_setup then
 	tracker.setup()
 	did_setup = true
 end
 
-local temp = vim.fn.getcwd() .. "/.explorer-non-lsp-test"
+local temp = vim.fn.getcwd() .. "/.trail-non-lsp-test"
 vim.fn.mkdir(temp, "p")
 
 local files = {
@@ -120,4 +120,4 @@ assert_equal(session.get_record(files.c).edges.search, 2, "search edge accumulat
 session.reset()
 vim.fn.delete(temp, "rf")
 
-print("explorer_non_lsp_tracking_spec: ok")
+print("trail_non_lsp_tracking_spec: ok")

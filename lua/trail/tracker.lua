@@ -1,9 +1,9 @@
-local session = require("explorer.session")
-local explorer = require("explorer.explorer")
+local session = require("trail.session")
+local view = require("trail.view")
 
 local M = {}
 
-local group = vim.api.nvim_create_augroup("explorer-tracker", { clear = true })
+local group = vim.api.nvim_create_augroup("trail-tracker", { clear = true })
 local did_wrap_lsp = false
 
 local lsp_methods = {
@@ -32,8 +32,8 @@ local pending = {
 local last_normal_bufnr = nil
 
 local function render_if_needed(changed)
-	if changed or explorer.is_open() then
-		explorer.render()
+	if changed or view.is_open() then
+		view.render()
 	end
 end
 

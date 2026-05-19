@@ -1,6 +1,6 @@
 ## Parent
 
-explorer-prd.md
+trail-prd.md
 
 ## What to build
 
@@ -25,4 +25,4 @@ Not started
 
 ## Blocked by
 
-- 01-session-commands-flat-explorer
+- 01-session-commands-flat-trail

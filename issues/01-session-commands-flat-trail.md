@@ -1,6 +1,6 @@
 ## Parent
 
-explorer-prd.md
+trail-prd.md
 
 ## What to build
 
@@ -12,7 +12,7 @@ No folders, no edges, no colors, no suffixes. Flat list of paths. This validates
 
 ## Status
 
-Done — implemented in `lua/explorer/` and covered by `tests/explorer_session_spec.lua`.
+Done — implemented in `lua/trail/` and covered by `tests/trail_session_spec.lua`.
 
 ## Acceptance criteria
 
@@ -22,7 +22,7 @@ Done — implemented in `lua/explorer/` and covered by `tests/explorer_session_s
 - [x] Flat list of all visited file paths appears, in visit order
 - [x] Current file is visually highlighted in the list
 - [x] Pressing `<CR>` on an item opens that file
-- [x] Pressing `q` closes the explorer split
+- [x] Pressing `q` closes the trail split
 - [x] `BufEnter` drives updates; each unique file is recorded once per entry
 - [x] Unit tests for session start/stop state transitions and file list building
 

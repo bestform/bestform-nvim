@@ -1,8 +1,8 @@
 package.path = vim.fn.getcwd() .. "/lua/?.lua;" .. vim.fn.getcwd() .. "/lua/?/init.lua;" .. package.path
 
-local session = require("explorer.session")
-local explorer = require("explorer.explorer")
-local edges = require("explorer.edges")
+local session = require("trail.session")
+local view = require("trail.view")
+local edges = require("trail.edges")
 
 local function assert_equal(actual, expected, message)
 	if actual ~= expected then
@@ -62,7 +62,7 @@ assert_strongest({
 
 -- ---- rendering / dimming tests ----
 
-local temp = vim.fn.getcwd() .. "/.explorer-multi-edge-test"
+local temp = vim.fn.getcwd() .. "/.trail-multi-edge-test"
 vim.fn.delete(temp, "rf")
 vim.fn.mkdir(temp .. "/src", "p")
 
@@ -87,12 +87,12 @@ session.record_file(files.definition, "definition") -- definition visited twice
 
 -- current_file is now files.definition
 
-explorer.open()
-local explorer_win = vim.api.nvim_get_current_win()
-local bufnr = vim.api.nvim_win_get_buf(explorer_win)
+view.open()
+local trail_win = vim.api.nvim_get_current_win()
+local bufnr = vim.api.nvim_win_get_buf(trail_win)
 
-explorer.render()
-local edge_ns = vim.api.nvim_create_namespace("explorer-edge-colors")
+view.render()
+local edge_ns = vim.api.nvim_create_namespace("trail-edge-colors")
 
 local edge_marks = vim.api.nvim_buf_get_extmarks(bufnr, edge_ns, 0, -1, { details = true })
 
@@ -134,8 +134,8 @@ assert_equal(has_mark_on_line(edge_marks, ref_line), true, "non-current referenc
 
 assert_equal(has_mark_on_line(edge_marks, tree_line), true, "non-current file_tree file has edge color")
 
-explorer.close()
+view.close()
 session.reset()
 vim.fn.delete(temp, "rf")
 
-print("explorer_multi_edge_spec: ok")
+print("trail_multi_edge_spec: ok")

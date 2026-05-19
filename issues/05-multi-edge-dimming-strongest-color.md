@@ -1,6 +1,6 @@
 ## Parent
 
-explorer-prd.md
+trail-prd.md
 
 ## What to build
 
@@ -12,7 +12,7 @@ Files that were visited in the past but are not the currently active file should
 
 ## Status
 
-Done — implemented in `lua/explorer/edges.lua` (alphabetical suffix + strongest priority), `lua/explorer/explorer.lua` (dimming via `ExplorerDim`), and covered by `tests/explorer_multi_edge_spec.lua`.
+Done — implemented in `lua/trail/edges.lua` (alphabetical suffix + strongest priority), `lua/trail/view.lua` (dimming via `TrailDim`), and covered by `tests/trail_multi_edge_spec.lua`.
 
 ## Acceptance criteria
 

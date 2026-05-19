@@ -1,6 +1,6 @@
 ## Parent
 
-explorer-prd.md
+trail-prd.md
 
 ## What to build
 
@@ -18,7 +18,7 @@ Evaluate these approaches. The acceptance criteria below should be met by whiche
 
 ## Status
 
-Done — implemented via contextual `BufLeave`/`WinLeave` heuristic in `lua/explorer/tracker.lua`, with new edge types and colors in `lua/explorer/edges.lua`, and covered by `tests/explorer_non_lsp_tracking_spec.lua`.
+Done — implemented via contextual `BufLeave`/`WinLeave` heuristic in `lua/trail/tracker.lua`, with new edge types and colors in `lua/trail/edges.lua`, and covered by `tests/trail_non_lsp_tracking_spec.lua`.
 
 ## Acceptance criteria
 

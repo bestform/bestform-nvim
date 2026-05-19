@@ -1,6 +1,6 @@
 package.path = vim.fn.getcwd() .. "/lua/?.lua;" .. vim.fn.getcwd() .. "/lua/?/init.lua;" .. package.path
 
-local session = require("explorer.session")
+local session = require("trail.session")
 
 local function assert_equal(actual, expected, message)
 	if actual ~= expected then
@@ -36,4 +36,4 @@ assert_list_equal(session.get_files(), { "/tmp/first.lua", "/tmp/second.lua" }, 
 session.reset()
 assert_list_equal(session.get_files(), {}, "reset clears files")
 
-print("explorer_session_spec: ok")
+print("trail_session_spec: ok")

@@ -11,13 +11,13 @@ M.labels = {
 }
 
 M.highlights = {
-	definition = "ExplorerEdgeDefinition",
-	reference = "ExplorerEdgeReference",
-	implementation = "ExplorerEdgeImplementation",
-	type_definition = "ExplorerEdgeTypeDefinition",
-	file_tree = "ExplorerEdgeFileTree",
-	search = "ExplorerEdgeSearch",
-	buffer_switch = "ExplorerEdgeBufferSwitch",
+	definition = "TrailEdgeDefinition",
+	reference = "TrailEdgeReference",
+	implementation = "TrailEdgeImplementation",
+	type_definition = "TrailEdgeTypeDefinition",
+	file_tree = "TrailEdgeFileTree",
+	search = "TrailEdgeSearch",
+	buffer_switch = "TrailEdgeBufferSwitch",
 }
 
 local priority = {
