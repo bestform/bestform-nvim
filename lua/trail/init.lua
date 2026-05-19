@@ -16,6 +16,11 @@ function M.stop()
 	view.render()
 end
 
+-- The plugin never auto-starts a session on startup.
+-- Users who want automatic tracking can configure their own autocmd, e.g.:
+--   vim.api.nvim_create_autocmd("VimEnter", {
+--     callback = function() require("trail").start() end,
+--   })
 function M.setup()
 	if did_setup then
 		return

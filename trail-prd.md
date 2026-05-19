@@ -11,7 +11,7 @@ An exploration session plugin that automatically tracks file visits during navig
 ## User Stories
 
 1. As a developer starting to explore a codebase, I want to start an exploration session with a command, so that I can begin tracking my navigation automatically.
-2. As a developer opening Neovim in a project, I want a new exploration session to start automatically, so that I don't lose my exploration context.
+2. As a developer opening Neovim in a project, I want the option to start an exploration session automatically via my own configuration, so that I can opt in to auto-tracking without the plugin forcing it.
 3. As a developer navigating code, I want the plugin to track when I visit files via LSP definition/reference jumps, so that strong code relationships are captured.
 4. As a developer using file trees or search, I want the plugin to track those navigations too, so that all exploration paths are recorded.
 5. As a developer viewing my exploration, I want files sorted alphabetically within folders, so that I can quickly find files in the tree.
@@ -34,7 +34,7 @@ An exploration session plugin that automatically tracks file visits during navig
 ## Implementation Decisions
 
 - **Architecture**: Four core modules - `init.lua` (setup/commands), `session.lua` (state), `view.lua` (window management), `tracker.lua` (BufEnter handling)
-- **Session Management**: In-memory only, auto-starts on project load via BufEnter detection, manual `:Trail` and `:TrailStop` commands
+- **Session Management**: In-memory only, manual `:Trail` and `:TrailStop` commands. Auto-start is not built in; users who want it can configure an autocmd that calls `require("trail").start()` on `VimEnter` or `BufEnter`.
 - **Project Root**: Detected via git root (`git rev-parse --show-toplevel`) 
 - **Edge Types**: definition (green), reference (sky), implementation (cyan), type_definition (blue), file_tree (lavender), search (yellow), buffer_switch (gray)
 - **Tree View**: Split window on right side, fixed width, always expanded, alphabetical sorting within folders

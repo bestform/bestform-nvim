@@ -4,24 +4,34 @@ trail-prd.md
 
 ## What to build
 
-Automatically start an exploration session when Neovim opens inside a project. Detect the project root via `git rev-parse --show-toplevel`. Ignore any file visited outside that project root (e.g. plugins, system config files).
+Provide project-root detection so the session can scope itself to a single project, but **do not auto-start a session from plugin code**. The user can opt in to auto-start via her own `VimEnter` autocmd or setup configuration.
 
-The key open question is **opt-in vs. opt-out**: should auto-start be the default, gated by a setup option, or should it require explicit enabling? Decide the intended default behavior and how a user opts in or out (setup function, global variable, or command).
+Detect the project root via `git rev-parse --show-toplevel`. Ignore any file visited outside that project root (e.g. plugins, system config files).
 
-Once decided, implement the auto-start logic and root scoping so the session only records files within the detected root.
+The decision is **opt-in via user configuration**: the plugin never starts a session automatically. A user who wants auto-start can add something like:
+
+```lua
+vim.api.nvim_create_autocmd("VimEnter", {
+  callback = function()
+    require("trail").start()
+  end,
+})
+```
+
+Once a session is active, only files within the detected project root are recorded.
 
 ## Status
 
-Not started
+Partially done — decision recorded (opt-in via user config, no plugin-side auto-start). Project-root detection and file-scoping logic still needs implementation in `session.lua` or `tracker.lua`.
 
 ## Acceptance criteria
 
-- [ ] A decision on auto-start default behavior (opt-in vs. opt-out) is recorded in a comment or small doc
-- [ ] When Neovim starts in a git-tracked directory, a session auto-starts if enabled
+- [x] A decision on auto-start default behavior (opt-in via user config) is recorded in a comment or small doc
+- [x] The plugin does **not** auto-start a session on startup; manual `:Trail` is required unless the user adds her own autocmd
 - [ ] The project root is detected via `git rev-parse --show-toplevel`
 - [ ] Files outside the detected root are silently ignored during session tracking
-- [ ] The manual `:Trail` command still works and starts a fresh session
-- [ ] If root detection fails (not inside a git repo), behavior is defined (no auto-start, or cwd fallback)
+- [x] The manual `:Trail` command still works and starts a fresh session
+- [ ] If root detection fails (not inside a git repo), behavior is defined (no scoping, or cwd fallback)
 - [ ] Unit tests for root detection and file-scoping logic; mock git and file system for determinism
 
 ## Blocked by
