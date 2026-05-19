@@ -7,7 +7,7 @@ local state = {
 	files = {},
 	seen = {},
 	records = {},
-	current_file = nil,
+	root = nil,
 }
 
 local function normalize_path(path)
@@ -22,7 +22,27 @@ local function normalize_path(path)
 	return vim.fn.fnamemodify(path, ":p")
 end
 
-function M.start()
+function M.detect_root(cwd)
+	cwd = cwd or vim.fn.getcwd()
+	local result = vim.fn.system("git -C " .. vim.fn.shellescape(cwd) .. " rev-parse --show-toplevel 2>/dev/null")
+	result = vim.trim(result)
+	if result ~= "" and vim.fn.isdirectory(result) == 1 then
+		return normalize_path(result)
+	end
+	return normalize_path(cwd)
+end
+
+function M.get_root()
+	return state.root
+end
+
+function M.start(opts)
+	opts = opts or {}
+	if opts.root then
+		state.root = normalize_path(opts.root)
+	elseif not state.root then
+		state.root = M.detect_root()
+	end
 	state.active = true
 end
 
@@ -42,6 +62,13 @@ function M.record_file(path, edge_type)
 	local normalized = normalize_path(path)
 	if not normalized then
 		return false
+	end
+
+	if state.root then
+		local root_prefix = state.root .. "/"
+		if normalized ~= state.root and not vim.startswith(normalized, root_prefix) then
+			return false
+		end
 	end
 
 	state.current_file = normalized
@@ -123,6 +150,7 @@ function M.reset()
 	state.seen = {}
 	state.records = {}
 	state.current_file = nil
+	state.root = nil
 end
 
 return M

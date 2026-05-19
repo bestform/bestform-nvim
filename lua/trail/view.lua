@@ -146,7 +146,7 @@ function M.render()
 	state.line_paths = {}
 	state.line_dirs = {}
 
-	render_node(tree.build(records, { root = vim.fn.getcwd() }), 0, lines, file_spans)
+	render_node(tree.build(records, { root = session.get_root() or vim.fn.getcwd() }), 0, lines, file_spans)
 
 	if #lines == 0 then
 		lines = { "No files visited yet" }

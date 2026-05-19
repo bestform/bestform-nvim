@@ -22,17 +22,17 @@ Once a session is active, only files within the detected project root are record
 
 ## Status
 
-Partially done — decision recorded (opt-in via user config, no plugin-side auto-start). Project-root detection and file-scoping logic still needs implementation in `session.lua` or `tracker.lua`.
+Done — root detection via `git rev-parse`, project-root scoping in `session.lua`, tree rendering uses session root, and covered by `tests/trail_project_scoping_spec.lua`.
 
 ## Acceptance criteria
 
 - [x] A decision on auto-start default behavior (opt-in via user config) is recorded in a comment or small doc
 - [x] The plugin does **not** auto-start a session on startup; manual `:Trail` is required unless the user adds her own autocmd
-- [ ] The project root is detected via `git rev-parse --show-toplevel`
-- [ ] Files outside the detected root are silently ignored during session tracking
+- [x] The project root is detected via `git rev-parse --show-toplevel`
+- [x] Files outside the detected root are silently ignored during session tracking
 - [x] The manual `:Trail` command still works and starts a fresh session
-- [ ] If root detection fails (not inside a git repo), behavior is defined (no scoping, or cwd fallback)
-- [ ] Unit tests for root detection and file-scoping logic; mock git and file system for determinism
+- [x] If root detection fails (not inside a git repo), behavior is defined (cwd fallback)
+- [x] Unit tests for root detection and file-scoping logic; mock git and file system for determinism
 
 ## Blocked by
 
