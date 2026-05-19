@@ -1,5 +1,6 @@
 require("options")
 require("autocommands")
+require("explorer").setup()
 
 -- LAZY
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
