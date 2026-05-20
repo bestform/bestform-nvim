@@ -16,6 +16,22 @@ function M.stop()
 	view.render()
 end
 
+-- Returns a formatted string suitable for any statusline plugin.
+-- Returns "" when no session data exists, so the component hides naturally.
+--
+-- Usage example with lualine.nvim:
+--   {
+--     function() return require("trail").statusline() end,
+--     color = { fg = "#5c6370" },
+--   }
+function M.statusline()
+	local stats = session.stats()
+	if stats.files == 0 and stats.edges == 0 then
+		return ""
+	end
+	return string.format("Trail: %d files, %d edges", stats.files, stats.edges)
+end
+
 -- The plugin never auto-starts a session on startup.
 -- Users who want automatic tracking can configure their own autocmd, e.g.:
 --   vim.api.nvim_create_autocmd("VimEnter", {

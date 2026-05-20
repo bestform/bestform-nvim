@@ -144,6 +144,22 @@ function M.get_records()
 	return records
 end
 
+function M.stats()
+	local files_count = #state.files
+	local edges_count = 0
+	for _, record in pairs(state.records) do
+		if record.edges then
+			for _, count in pairs(record.edges) do
+				edges_count = edges_count + count
+			end
+		end
+	end
+	return {
+		files = files_count,
+		edges = edges_count,
+	}
+end
+
 function M.reset()
 	state.active = false
 	state.files = {}
