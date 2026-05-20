@@ -16,12 +16,12 @@ Not started
 
 ## Acceptance criteria
 
-- [ ] A decision on the integration surface (function vs. data API) is recorded
-- [ ] A public function or API returns session stats: files visited count and total edge count
-- [ ] The statusline information updates as the session evolves
-- [ ] An example snippet shows integration with at least one statusline plugin (e.g. lualine)
-- [ ] If no session is active, the statusline component shows a neutral/inactive state (e.g. empty string or "—")
-- [ ] Unit tests verify that stats are computed correctly from session state
+- [x] A decision on the integration surface (function vs. data API) is recorded
+- [x] A public function or API returns session stats: files visited count and total edge count
+- [x] The statusline information updates as the session evolves
+- [x] An example snippet shows integration with at least one statusline plugin (e.g. lualine)
+- [x] If no session is active, the statusline component shows a neutral/inactive state (e.g. empty string or "—")
+- [x] Unit tests verify that stats are computed correctly from session state
 
 ## Blocked by
 
