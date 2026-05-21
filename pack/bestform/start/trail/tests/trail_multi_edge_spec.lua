@@ -60,7 +60,7 @@ assert_strongest({
 	buffer_switch = 1,
 }, "search", "search > buffer_switch")
 
--- ---- rendering / dimming tests ----
+-- ---- rendering / recency color tests ----
 
 local temp = vim.fn.getcwd() .. "/.trail-multi-edge-test"
 vim.fn.delete(temp, "rf")
@@ -77,7 +77,7 @@ for _, path in pairs(files) do
 end
 
 session.reset()
-session.start()
+session.start({ root = temp })
 
 -- Record edges for each file (simulate visits)
 session.record_file(files.definition, "definition")
@@ -92,12 +92,12 @@ local trail_win = vim.api.nvim_get_current_win()
 local bufnr = vim.api.nvim_win_get_buf(trail_win)
 
 view.render()
-local edge_ns = vim.api.nvim_create_namespace("trail-edge-colors")
+local recency_ns = vim.api.nvim_create_namespace("trail-recency-colors")
 
-local edge_marks = vim.api.nvim_buf_get_extmarks(bufnr, edge_ns, 0, -1, { details = true })
+local recency_marks = vim.api.nvim_buf_get_extmarks(bufnr, recency_ns, 0, -1, { details = true })
 
--- All visited files should have edge highlights
-assert_equal(#edge_marks >= 1, true, "visited files have edge highlights")
+-- All visited files should have recency highlights
+assert_equal(#recency_marks >= 1, true, "visited files have recency highlights")
 
 -- Find line numbers for each file
 local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
@@ -128,11 +128,11 @@ local function has_mark_on_line(marks, line)
 	return false
 end
 
-assert_equal(has_mark_on_line(edge_marks, current_line), true, "current file has edge color")
+assert_equal(has_mark_on_line(recency_marks, current_line), true, "current file has recency color")
 
-assert_equal(has_mark_on_line(edge_marks, ref_line), true, "non-current reference file has edge color")
+assert_equal(has_mark_on_line(recency_marks, ref_line), true, "non-current reference file has recency color")
 
-assert_equal(has_mark_on_line(edge_marks, tree_line), true, "non-current file_tree file has edge color")
+assert_equal(has_mark_on_line(recency_marks, tree_line), true, "non-current file_tree file has recency color")
 
 view.close()
 session.reset()

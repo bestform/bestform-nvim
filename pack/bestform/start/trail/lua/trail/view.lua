@@ -1,12 +1,13 @@
 local session = require("trail.session")
 local tree = require("trail.tree")
 local edges = require("trail.edges")
+local recency = require("trail.recency")
 
 local M = {}
 
 local WIDTH = 40
 local namespace = vim.api.nvim_create_namespace("trail-current-file")
-local edge_namespace = vim.api.nvim_create_namespace("trail-edge-colors")
+local recency_namespace = vim.api.nvim_create_namespace("trail-recency-colors")
 
 local state = {
 	bufnr = nil,
@@ -43,7 +44,6 @@ local function render_node(node, depth, lines, file_spans)
 				start_col = #indent,
 				end_col = #indent + #child.name,
 				path = child.path,
-				edge_type = edges.strongest(child.edges),
 			}
 		end
 	end
@@ -139,8 +139,10 @@ function M.render()
 	end
 
 	edges.setup_highlights()
+	recency.setup_highlights()
 
 	local records = session.get_records()
+	local recency_highlights = recency.by_path(records)
 	local lines = {}
 	local file_spans = {}
 	state.line_paths = {}
@@ -157,15 +159,15 @@ function M.render()
 	vim.bo[state.bufnr].modifiable = false
 
 	vim.api.nvim_buf_clear_namespace(state.bufnr, namespace, 0, -1)
-	vim.api.nvim_buf_clear_namespace(state.bufnr, edge_namespace, 0, -1)
+	vim.api.nvim_buf_clear_namespace(state.bufnr, recency_namespace, 0, -1)
 
 	local current = session.get_current_file()
 	for line, span in pairs(file_spans) do
 		local is_current = current and span.path == current
-		local highlight = span.edge_type and edges.highlights[span.edge_type]
+		local highlight = recency_highlights[span.path]
 
 		if highlight then
-			vim.api.nvim_buf_add_highlight(state.bufnr, edge_namespace, highlight, line - 1, span.start_col, span.end_col)
+			vim.api.nvim_buf_add_highlight(state.bufnr, recency_namespace, highlight, line - 1, span.start_col, span.end_col)
 		end
 
 		if is_current then

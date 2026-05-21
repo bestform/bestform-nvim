@@ -31,7 +31,7 @@ for _, f in ipairs(files) do
 end
 
 session.reset()
-session.start()
+session.start({ root = vim.fn.getcwd() })
 for _, f in ipairs(files) do
 	session.record_file(f)
 end

@@ -94,6 +94,7 @@ function M.build(files, opts)
 				name = filename,
 				path = path,
 				edges = type(item) == "table" and item.edges or nil,
+				last_visit_seq = type(item) == "table" and item.last_visit_seq or nil,
 			})
 		end
 	end

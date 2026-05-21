@@ -18,7 +18,7 @@ vim.fn.writefile({ "-- first" }, first)
 vim.fn.writefile({ "-- second" }, second)
 
 session.reset()
-session.start()
+session.start({ root = temp })
 
 vim.cmd.edit(vim.fn.fnameescape(first))
 local source_win = vim.api.nvim_get_current_win()
@@ -29,8 +29,8 @@ view.open()
 local trail_win = vim.api.nvim_get_current_win()
 assert_equal(trail_win ~= source_win, true, "trail opens in a side window")
 
--- The tree contains a directory row first, then files sorted alphabetically.
-vim.api.nvim_win_set_cursor(trail_win, { 3, 0 })
+-- With the temp directory as root, the tree contains files sorted alphabetically.
+vim.api.nvim_win_set_cursor(trail_win, { 2, 0 })
 view.open_selected()
 
 assert_equal(vim.api.nvim_win_is_valid(trail_win), true, "trail window remains open")

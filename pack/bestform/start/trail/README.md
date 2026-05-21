@@ -64,6 +64,28 @@ The plugin does not require any configuration. Call `setup()` once:
 require("trail").setup()
 ```
 
+Trail colors can be customized by recency. Any omitted value falls back to the default:
+
+```lua
+require("trail").setup({
+  recency = {
+    newest = "#ffb86c",
+    oldest = "#6f8f72",
+    steps = 6,
+  },
+})
+```
+
+For example, to only choose the freshest file color:
+
+```lua
+require("trail").setup({
+  recency = {
+    newest = "#c792ea",
+  },
+})
+```
+
 ### Auto-start on launch
 
 The plugin intentionally never auto-starts. Add your own autocmd if desired:
@@ -89,14 +111,14 @@ vim.api.nvim_create_autocmd("VimEnter", {
 Run individual test files from the plugin root:
 
 ```bash
-nvim -u NONE -c "lua dofile('tests/trail_session_spec.lua')" -c "q"
+nvim --headless -u NONE -c "lua dofile('tests/trail_session_spec.lua')" -c "qa!"
 ```
 
 Or run all tests:
 
 ```bash
 for f in tests/trail_*_spec.lua; do
-  nvim -u NONE -c "lua dofile('$f')" -c "q" || exit 1
+  nvim --headless -u NONE -c "lua dofile('$f')" -c "qa!" || exit 1
 done
 ```
 
@@ -110,4 +132,5 @@ lua/trail/
   view.lua     -- window management and rendering
   tree.lua     -- tree building from file records
   edges.lua    -- edge type definitions and formatting
+  recency.lua  -- visit-recency highlight palette
 ```

@@ -8,6 +8,8 @@ local state = {
 	seen = {},
 	records = {},
 	root = nil,
+	current_file = nil,
+	visit_sequence = 0,
 }
 
 local function normalize_path(path)
@@ -79,11 +81,15 @@ function M.record_file(path, edge_type)
 		state.records[normalized] = {
 			path = normalized,
 			edges = {},
+			last_visit_seq = 0,
 		}
 		table.insert(state.files, normalized)
 	end
 
 	local record = state.records[normalized]
+	state.visit_sequence = state.visit_sequence + 1
+	record.last_visit_seq = state.visit_sequence
+
 	local edge_recorded = false
 	if edge_type and edges.is_known(edge_type) then
 		record.edges[edge_type] = (record.edges[edge_type] or 0) + 1
@@ -133,6 +139,7 @@ function M.get_record(path)
 	return {
 		path = record.path,
 		edges = vim.deepcopy(record.edges),
+		last_visit_seq = record.last_visit_seq,
 	}
 end
 
@@ -167,6 +174,7 @@ function M.reset()
 	state.records = {}
 	state.current_file = nil
 	state.root = nil
+	state.visit_sequence = 0
 end
 
 return M

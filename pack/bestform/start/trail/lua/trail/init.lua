@@ -1,6 +1,7 @@
 local session = require("trail.session")
 local view = require("trail.view")
 local tracker = require("trail.tracker")
+local recency = require("trail.recency")
 
 local M = {}
 local did_setup = false
@@ -37,7 +38,10 @@ end
 --   vim.api.nvim_create_autocmd("VimEnter", {
 --     callback = function() require("trail").start() end,
 --   })
-function M.setup()
+function M.setup(opts)
+	recency.setup((opts or {}).recency)
+	recency.setup_highlights()
+
 	if did_setup then
 		return
 	end
