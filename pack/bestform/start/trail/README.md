@@ -8,7 +8,7 @@ by navigation type (definition, reference, search, etc.).
 
 - Tracks file visits via LSP jumps, file trees, search pickers, and buffer switches
 - Color-coded edge types to show connection strength
-- Interactive tree view with folder expansion/collapse
+- Tree view with file-only cursor navigation
 - Statusline integration
 - Zero dependencies
 
@@ -53,8 +53,8 @@ ln -s /path/to/trail.nvim ~/.config/nvim/pack/trail/start/trail
 1. Run `:Trail` to start a session
 2. Navigate code normally — jumps via LSP, file trees, and search are tracked automatically
 3. The trail tree view opens automatically and updates as you explore
-4. Press `Enter` on a file in the tree to open it
-5. Press `l` to expand folders, `h` to collapse, `q` to close the view
+4. Move with `j`/`k`; navigation skips folders and lands only on files
+5. Press `Enter` on a file in the tree to open it, or `q` to close the view
 
 ## Configuration
 

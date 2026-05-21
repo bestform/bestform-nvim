@@ -16,7 +16,7 @@ local function assert_list_equal(actual, expected, message)
 	end
 end
 
-local temp = vim.fn.getcwd() .. "/trail-expand-collapse-test"
+local temp = vim.fn.getcwd() .. "/trail-file-navigation-test"
 vim.fn.delete(temp, "rf")
 vim.fn.mkdir(temp .. "/src/nested", "p")
 vim.fn.mkdir(temp .. "/test", "p")
@@ -49,97 +49,57 @@ local function cursor(line)
 	vim.api.nvim_win_set_cursor(trail_win, { line, 0 })
 end
 
--- Initial: all expanded
+local function cursor_line()
+	return vim.api.nvim_win_get_cursor(trail_win)[1]
+end
+
 assert_list_equal(get_lines(), {
-	"trail-expand-collapse-test/",
+	"trail-file-navigation-test/",
 	"  src/",
 	"    nested/",
 	"      a.lua",
 	"    b.lua",
 	"  test/",
 	"    spec.lua",
-}, "initial fully expanded")
+}, "tree is always fully expanded")
 
--- Collapse src/ (line 2)
-cursor(2)
-view.collapse()
-assert_list_equal(get_lines(), {
-	"trail-expand-collapse-test/",
-	"  src/",
-	"  test/",
-	"    spec.lua",
-}, "src collapsed")
+assert_equal(cursor_line(), 7, "current file is selected after render")
 
--- h on collapsed src/ does nothing
-view.collapse()
-assert_list_equal(get_lines(), {
-	"trail-expand-collapse-test/",
-	"  src/",
-	"  test/",
-	"    spec.lua",
-}, "h on collapsed dir does nothing")
-
--- l on expanded test/ does nothing
-cursor(3)
-view.expand_or_open()
-assert_list_equal(get_lines(), {
-	"trail-expand-collapse-test/",
-	"  src/",
-	"  test/",
-	"    spec.lua",
-}, "l on expanded dir does nothing")
-
--- Collapse root (line 1)
 cursor(1)
-view.collapse()
-assert_list_equal(get_lines(), {
-	"trail-expand-collapse-test/",
-}, "root collapsed")
+view.move_next_file()
+assert_equal(cursor_line(), 4, "j from a directory jumps to next file")
 
--- Expand root (line 1)
-view.expand_or_open()
-assert_list_equal(get_lines(), {
-	"trail-expand-collapse-test/",
-	"  src/",
-	"  test/",
-	"    spec.lua",
-}, "root expanded, src still collapsed")
+view.move_next_file()
+assert_equal(cursor_line(), 5, "j moves to following file")
 
--- Expand src/ (line 2)
+view.move_next_file()
+assert_equal(cursor_line(), 7, "j skips directories between files")
+
+view.move_next_file()
+assert_equal(cursor_line(), 7, "j stays on the last file")
+
+cursor(6)
+view.move_previous_file()
+assert_equal(cursor_line(), 5, "k from a directory jumps to previous file")
+
+view.move_previous_file()
+assert_equal(cursor_line(), 4, "k moves to previous file")
+
+view.move_previous_file()
+assert_equal(cursor_line(), 4, "k stays on the first file")
+
 cursor(2)
-view.expand_or_open()
-assert_list_equal(get_lines(), {
-	"trail-expand-collapse-test/",
-	"  src/",
-	"    nested/",
-	"      a.lua",
-	"    b.lua",
-	"  test/",
-	"    spec.lua",
-}, "fully expanded again")
+view.open_selected()
+assert_equal(vim.api.nvim_get_current_win(), trail_win, "opening a directory line does nothing")
 
--- h on a file does nothing
 cursor(4)
-view.collapse()
-assert_list_equal(get_lines(), {
-	"trail-expand-collapse-test/",
-	"  src/",
-	"    nested/",
-	"      a.lua",
-	"    b.lua",
-	"  test/",
-	"    spec.lua",
-}, "h on file leaves tree unchanged")
-
--- l on a file opens it in source window
-cursor(4)
-view.expand_or_open()
-assert_equal(vim.api.nvim_get_current_win(), source_win, "l on file opens in source window")
-assert_equal(vim.api.nvim_buf_get_name(0), temp .. "/src/nested/a.lua", "l on file opens correct file")
+view.open_selected()
+assert_equal(vim.api.nvim_get_current_win(), source_win, "opening a file uses the source window")
+assert_equal(vim.api.nvim_buf_get_name(0), temp .. "/src/nested/a.lua", "opens correct file")
 
 -- Cleanup
 view.close()
 session.reset()
 vim.fn.delete(temp, "rf")
 
-print("trail_expand_collapse_spec: ok")
+print("trail_file_navigation_spec: ok")

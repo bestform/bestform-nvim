@@ -8,14 +8,15 @@ local M = {}
 local WIDTH = 40
 local namespace = vim.api.nvim_create_namespace("trail-current-file")
 local recency_namespace = vim.api.nvim_create_namespace("trail-recency-colors")
+local directory_namespace = vim.api.nvim_create_namespace("trail-directories")
+
+local DIRECTORY_HIGHLIGHT = "TrailDirectory"
 
 local state = {
 	bufnr = nil,
 	winid = nil,
 	last_source_winid = nil,
 	line_paths = {},
-	line_dirs = {},
-	collapsed = {},
 }
 
 local function is_valid_window(winid)
@@ -26,16 +27,17 @@ local function is_valid_buffer(bufnr)
 	return bufnr and vim.api.nvim_buf_is_valid(bufnr)
 end
 
-local function render_node(node, depth, lines, file_spans)
+local function render_node(node, depth, lines, file_spans, directory_spans)
 	local indent = string.rep("  ", depth)
 
 	for _, child in ipairs(node.children) do
 		if child.type == "directory" then
 			table.insert(lines, indent .. child.name .. "/")
-			state.line_dirs[#lines] = child.path
-			if not state.collapsed[child.path] then
-				render_node(child, depth + 1, lines, file_spans)
-			end
+			directory_spans[#lines] = {
+				start_col = #indent,
+				end_col = #indent + #child.name + 1,
+			}
+			render_node(child, depth + 1, lines, file_spans, directory_spans)
 		else
 			local line = indent .. child.name .. edges.format_suffix(child.edges)
 			table.insert(lines, line)
@@ -46,6 +48,27 @@ local function render_node(node, depth, lines, file_spans)
 				path = child.path,
 			}
 		end
+	end
+end
+
+local function setup_highlights()
+	edges.setup_highlights()
+	recency.setup_highlights()
+	vim.api.nvim_set_hl(0, DIRECTORY_HIGHLIGHT, { fg = "#5c6370" })
+end
+
+local function first_file_line()
+	for line = 1, vim.api.nvim_buf_line_count(state.bufnr) do
+		if state.line_paths[line] then
+			return line
+		end
+	end
+	return nil
+end
+
+local function move_to_file_line(line)
+	if line then
+		vim.api.nvim_win_set_cursor(0, { line, 0 })
 	end
 end
 
@@ -63,8 +86,11 @@ local function ensure_buffer()
 
 	vim.keymap.set("n", "q", M.close, { buffer = state.bufnr, silent = true, nowait = true })
 	vim.keymap.set("n", "<CR>", M.open_selected, { buffer = state.bufnr, silent = true })
-	vim.keymap.set("n", "l", M.expand_or_open, { buffer = state.bufnr, silent = true })
-	vim.keymap.set("n", "h", M.collapse, { buffer = state.bufnr, silent = true })
+	vim.keymap.set("n", "l", M.open_selected, { buffer = state.bufnr, silent = true })
+	vim.keymap.set("n", "j", M.move_next_file, { buffer = state.bufnr, silent = true })
+	vim.keymap.set("n", "k", M.move_previous_file, { buffer = state.bufnr, silent = true })
+	vim.keymap.set("n", "<Down>", M.move_next_file, { buffer = state.bufnr, silent = true })
+	vim.keymap.set("n", "<Up>", M.move_previous_file, { buffer = state.bufnr, silent = true })
 
 	return state.bufnr
 end
@@ -108,7 +134,6 @@ local function find_source_window()
 end
 
 function M.open()
-	state.collapsed = {}
 	local bufnr = ensure_buffer()
 	remember_source_window()
 
@@ -138,17 +163,16 @@ function M.render()
 		return
 	end
 
-	edges.setup_highlights()
-	recency.setup_highlights()
+	setup_highlights()
 
 	local records = session.get_records()
 	local recency_highlights = recency.by_path(records)
 	local lines = {}
 	local file_spans = {}
+	local directory_spans = {}
 	state.line_paths = {}
-	state.line_dirs = {}
 
-	render_node(tree.build(records, { root = session.get_root() or vim.fn.getcwd() }), 0, lines, file_spans)
+	render_node(tree.build(records, { root = session.get_root() or vim.fn.getcwd() }), 0, lines, file_spans, directory_spans)
 
 	if #lines == 0 then
 		lines = { "No files visited yet" }
@@ -160,8 +184,14 @@ function M.render()
 
 	vim.api.nvim_buf_clear_namespace(state.bufnr, namespace, 0, -1)
 	vim.api.nvim_buf_clear_namespace(state.bufnr, recency_namespace, 0, -1)
+	vim.api.nvim_buf_clear_namespace(state.bufnr, directory_namespace, 0, -1)
+
+	for line, span in pairs(directory_spans) do
+		vim.api.nvim_buf_add_highlight(state.bufnr, directory_namespace, DIRECTORY_HIGHLIGHT, line - 1, span.start_col, span.end_col)
+	end
 
 	local current = session.get_current_file()
+	local current_line = nil
 	for line, span in pairs(file_spans) do
 		local is_current = current and span.path == current
 		local highlight = recency_highlights[span.path]
@@ -171,11 +201,13 @@ function M.render()
 		end
 
 		if is_current then
+			current_line = line
 			vim.api.nvim_buf_add_highlight(state.bufnr, namespace, "CursorLine", line - 1, 0, -1)
-			if is_valid_window(state.winid) then
-				vim.api.nvim_win_set_cursor(state.winid, { line, 0 })
-			end
 		end
+	end
+
+	if is_valid_window(state.winid) then
+		vim.api.nvim_win_set_cursor(state.winid, { current_line or first_file_line() or 1, 0 })
 	end
 end
 
@@ -194,29 +226,23 @@ function M.open_selected()
 	vim.cmd.edit(vim.fn.fnameescape(path))
 end
 
-function M.expand_or_open()
-	local line = vim.api.nvim_win_get_cursor(0)[1]
-	local dir_path = state.line_dirs[line]
-	if dir_path then
-		if state.collapsed[dir_path] then
-			state.collapsed[dir_path] = nil
-			local saved_cursor = vim.api.nvim_win_get_cursor(0)
-			M.render()
-			vim.api.nvim_win_set_cursor(0, saved_cursor)
+function M.move_next_file()
+	local current_line = vim.api.nvim_win_get_cursor(0)[1]
+	for line = current_line + 1, vim.api.nvim_buf_line_count(state.bufnr) do
+		if state.line_paths[line] then
+			move_to_file_line(line)
+			return
 		end
-	else
-		M.open_selected()
 	end
 end
 
-function M.collapse()
-	local line = vim.api.nvim_win_get_cursor(0)[1]
-	local dir_path = state.line_dirs[line]
-	if dir_path and not state.collapsed[dir_path] then
-		state.collapsed[dir_path] = true
-		local saved_cursor = vim.api.nvim_win_get_cursor(0)
-		M.render()
-		vim.api.nvim_win_set_cursor(0, saved_cursor)
+function M.move_previous_file()
+	local current_line = vim.api.nvim_win_get_cursor(0)[1]
+	for line = current_line - 1, 1, -1 do
+		if state.line_paths[line] then
+			move_to_file_line(line)
+			return
+		end
 	end
 end
 
