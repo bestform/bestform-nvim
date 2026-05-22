@@ -49,6 +49,14 @@ function M.setup(opts)
 
 	tracker.setup()
 
+	vim.api.nvim_create_autocmd("SessionLoadPost", {
+		group = vim.api.nvim_create_augroup("trail-session-restore", { clear = true }),
+		desc = "Clean restored Trail view buffers",
+		callback = function()
+			view.clean_invalid_session_buffers()
+		end,
+	})
+
 	vim.api.nvim_create_user_command("Trail", function()
 		M.start()
 	end, { desc = "Start an exploration trail session" })

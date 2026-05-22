@@ -6,6 +6,8 @@ local recency = require("trail.recency")
 local M = {}
 
 local WIDTH = 40
+local TRAIL_BUFFER_NAME = "trail://view"
+local TRAIL_BUFFER_VAR = "trail_view"
 local namespace = vim.api.nvim_create_namespace("trail-current-file")
 local recency_namespace = vim.api.nvim_create_namespace("trail-recency-colors")
 local directory_namespace = vim.api.nvim_create_namespace("trail-directories")
@@ -25,6 +27,36 @@ end
 
 local function is_valid_buffer(bufnr)
 	return bufnr and vim.api.nvim_buf_is_valid(bufnr)
+end
+
+local function is_trail_name(bufnr)
+	return vim.fn.bufname(bufnr) == TRAIL_BUFFER_NAME
+end
+
+local function is_marked_trail_buffer(bufnr)
+	local ok, value = pcall(vim.api.nvim_buf_get_var, bufnr, TRAIL_BUFFER_VAR)
+	return ok and value == true
+end
+
+local function looks_like_restored_trail_buffer(bufnr)
+	return is_trail_name(bufnr)
+end
+
+local function mark_trail_buffer(bufnr)
+	vim.bo[bufnr].bufhidden = "hide"
+	vim.bo[bufnr].buftype = "nofile"
+	vim.bo[bufnr].filetype = "trail"
+	vim.bo[bufnr].swapfile = false
+	vim.api.nvim_buf_set_var(bufnr, TRAIL_BUFFER_VAR, true)
+end
+
+local function find_existing_trail_buffer()
+	for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+		if is_marked_trail_buffer(bufnr) then
+			return bufnr
+		end
+	end
+	return nil
 end
 
 local function render_node(node, depth, lines, file_spans, directory_spans)
@@ -77,12 +109,12 @@ local function ensure_buffer()
 		return state.bufnr
 	end
 
-	state.bufnr = vim.api.nvim_create_buf(false, true)
-	vim.bo[state.bufnr].bufhidden = "hide"
-	vim.bo[state.bufnr].buftype = "nofile"
-	vim.bo[state.bufnr].filetype = "trail"
-	vim.bo[state.bufnr].swapfile = false
-	vim.api.nvim_buf_set_name(state.bufnr, "Trail")
+	state.bufnr = find_existing_trail_buffer()
+	if not state.bufnr then
+		state.bufnr = vim.api.nvim_create_buf(false, true)
+		vim.api.nvim_buf_set_name(state.bufnr, TRAIL_BUFFER_NAME)
+	end
+	mark_trail_buffer(state.bufnr)
 
 	vim.keymap.set("n", "q", M.close, { buffer = state.bufnr, silent = true, nowait = true })
 	vim.keymap.set("n", "<CR>", M.open_selected, { buffer = state.bufnr, silent = true })
@@ -158,6 +190,14 @@ function M.close()
 	state.winid = nil
 end
 
+function M.clean_invalid_session_buffers()
+	for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+		if is_valid_buffer(bufnr) and looks_like_restored_trail_buffer(bufnr) and not is_marked_trail_buffer(bufnr) then
+			vim.api.nvim_buf_delete(bufnr, { force = true })
+		end
+	end
+end
+
 function M.render()
 	if not is_valid_buffer(state.bufnr) then
 		return
@@ -172,7 +212,13 @@ function M.render()
 	local directory_spans = {}
 	state.line_paths = {}
 
-	render_node(tree.build(records, { root = session.get_root() or vim.fn.getcwd() }), 0, lines, file_spans, directory_spans)
+	render_node(
+		tree.build(records, { root = session.get_root() or vim.fn.getcwd() }),
+		0,
+		lines,
+		file_spans,
+		directory_spans
+	)
 
 	if #lines == 0 then
 		lines = { "No files visited yet" }
@@ -187,7 +233,14 @@ function M.render()
 	vim.api.nvim_buf_clear_namespace(state.bufnr, directory_namespace, 0, -1)
 
 	for line, span in pairs(directory_spans) do
-		vim.api.nvim_buf_add_highlight(state.bufnr, directory_namespace, DIRECTORY_HIGHLIGHT, line - 1, span.start_col, span.end_col)
+		vim.api.nvim_buf_add_highlight(
+			state.bufnr,
+			directory_namespace,
+			DIRECTORY_HIGHLIGHT,
+			line - 1,
+			span.start_col,
+			span.end_col
+		)
 	end
 
 	local current = session.get_current_file()
@@ -197,7 +250,14 @@ function M.render()
 		local highlight = recency_highlights[span.path]
 
 		if highlight then
-			vim.api.nvim_buf_add_highlight(state.bufnr, recency_namespace, highlight, line - 1, span.start_col, span.end_col)
+			vim.api.nvim_buf_add_highlight(
+				state.bufnr,
+				recency_namespace,
+				highlight,
+				line - 1,
+				span.start_col,
+				span.end_col
+			)
 		end
 
 		if is_current then
