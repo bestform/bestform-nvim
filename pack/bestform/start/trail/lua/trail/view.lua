@@ -60,7 +60,7 @@ local function find_existing_trail_buffer()
 end
 
 local function render_node(node, depth, lines, file_spans, directory_spans)
-	local indent = string.rep("  ", depth)
+	local indent = string.rep(" ", depth)
 
 	for _, child in ipairs(node.children) do
 		if child.type == "directory" then
