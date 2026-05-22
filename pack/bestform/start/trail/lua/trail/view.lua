@@ -11,8 +11,10 @@ local TRAIL_BUFFER_VAR = "trail_view"
 local namespace = vim.api.nvim_create_namespace("trail-current-file")
 local recency_namespace = vim.api.nvim_create_namespace("trail-recency-colors")
 local directory_namespace = vim.api.nvim_create_namespace("trail-directories")
+local edge_suffix_namespace = vim.api.nvim_create_namespace("trail-edge-suffix")
 
 local DIRECTORY_HIGHLIGHT = "TrailDirectory"
+local EDGE_SUFFIX_HIGHLIGHT = "TrailEdgeSuffix"
 
 local state = {
 	bufnr = nil,
@@ -59,7 +61,7 @@ local function find_existing_trail_buffer()
 	return nil
 end
 
-local function render_node(node, depth, lines, file_spans, directory_spans)
+local function render_node(node, depth, lines, file_spans, directory_spans, edge_suffix_spans)
 	local indent = string.rep(" ", depth)
 
 	for _, child in ipairs(node.children) do
@@ -69,9 +71,10 @@ local function render_node(node, depth, lines, file_spans, directory_spans)
 				start_col = #indent,
 				end_col = #indent + #child.name + 1,
 			}
-			render_node(child, depth + 1, lines, file_spans, directory_spans)
+			render_node(child, depth + 1, lines, file_spans, directory_spans, edge_suffix_spans)
 		else
-			local line = indent .. child.name .. edges.format_suffix(child.edges)
+			local suffix = edges.format_suffix(child.edges)
+			local line = indent .. child.name .. suffix
 			table.insert(lines, line)
 			state.line_paths[#lines] = child.path
 			file_spans[#lines] = {
@@ -79,6 +82,12 @@ local function render_node(node, depth, lines, file_spans, directory_spans)
 				end_col = #indent + #child.name,
 				path = child.path,
 			}
+			if suffix ~= "" then
+				edge_suffix_spans[#lines] = {
+					start_col = #indent + #child.name,
+					end_col = #indent + #child.name + #suffix,
+				}
+			end
 		end
 	end
 end
@@ -87,6 +96,7 @@ local function setup_highlights()
 	edges.setup_highlights()
 	recency.setup_highlights()
 	vim.api.nvim_set_hl(0, DIRECTORY_HIGHLIGHT, { fg = "#5c6370" })
+	vim.api.nvim_set_hl(0, EDGE_SUFFIX_HIGHLIGHT, { fg = "#3b4048" })
 end
 
 local function first_file_line()
@@ -177,6 +187,7 @@ function M.open()
 		vim.wo[state.winid].relativenumber = false
 		vim.wo[state.winid].signcolumn = "no"
 		vim.wo[state.winid].wrap = false
+		vim.wo[state.winid].winfixwidth = true
 		vim.api.nvim_win_set_width(state.winid, WIDTH)
 	end
 
@@ -210,6 +221,7 @@ function M.render()
 	local lines = {}
 	local file_spans = {}
 	local directory_spans = {}
+	local edge_suffix_spans = {}
 	state.line_paths = {}
 
 	render_node(
@@ -217,7 +229,8 @@ function M.render()
 		0,
 		lines,
 		file_spans,
-		directory_spans
+		directory_spans,
+		edge_suffix_spans
 	)
 
 	if #lines == 0 then
@@ -231,12 +244,24 @@ function M.render()
 	vim.api.nvim_buf_clear_namespace(state.bufnr, namespace, 0, -1)
 	vim.api.nvim_buf_clear_namespace(state.bufnr, recency_namespace, 0, -1)
 	vim.api.nvim_buf_clear_namespace(state.bufnr, directory_namespace, 0, -1)
+	vim.api.nvim_buf_clear_namespace(state.bufnr, edge_suffix_namespace, 0, -1)
 
 	for line, span in pairs(directory_spans) do
 		vim.api.nvim_buf_add_highlight(
 			state.bufnr,
 			directory_namespace,
 			DIRECTORY_HIGHLIGHT,
+			line - 1,
+			span.start_col,
+			span.end_col
+		)
+	end
+
+	for line, span in pairs(edge_suffix_spans) do
+		vim.api.nvim_buf_add_highlight(
+			state.bufnr,
+			edge_suffix_namespace,
+			EDGE_SUFFIX_HIGHLIGHT,
 			line - 1,
 			span.start_col,
 			span.end_col
