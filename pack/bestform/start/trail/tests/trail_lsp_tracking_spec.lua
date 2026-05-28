@@ -9,31 +9,32 @@ local function assert_equal(actual, expected, message)
 	end
 end
 
-local temp = vim.fn.getcwd() .. "/.trail-lsp-tracking-test.lua"
-vim.fn.writefile({ "-- lsp target" }, temp)
+local temp = vim.fn.getcwd() .. "/.trail-lsp-stale-test-a.lua"
+local stale = vim.fn.getcwd() .. "/.trail-lsp-stale-test-b.lua"
+vim.fn.writefile({ "-- temp" }, temp)
+vim.fn.writefile({ "-- stale" }, stale)
 
 session.reset()
-session.start()
-vim.cmd.edit(vim.fn.fnameescape(temp))
+session.start({ root = vim.fn.getcwd() })
+tracker.setup()
 
-local definition_called = false
-vim.lsp.handlers["textDocument/definition"] = function()
-	definition_called = true
-	return "original-result"
+local original_definition = vim.lsp.buf.definition
+vim.lsp.buf.definition = function()
+	return nil
 end
 
-tracker.wrap_lsp_handlers()
-local result = vim.lsp.handlers["textDocument/definition"]()
-vim.wait(100, function()
-	local record = session.get_record(temp)
-	return record and record.edges.definition == 1
-end)
+vim.cmd.edit(vim.fn.fnameescape(temp))
+vim.lsp.buf.definition()
+vim.wait(300)
+vim.cmd.edit(vim.fn.fnameescape(stale))
 
-assert_equal(result, "original-result", "wrapped handler returns original result")
-assert_equal(definition_called, true, "wrapped handler calls original handler")
-assert_equal(session.get_record(temp).edges.definition, 1, "definition handler records landed buffer")
+local record = session.get_record(stale)
+assert_equal(record.edges.buffer_switch, 1, "expired LSP pending state falls back to buffer_switch")
+assert_equal(record.edges.definition, nil, "expired LSP pending state does not leak definition edge")
 
+vim.lsp.buf.definition = original_definition
 session.reset()
 vim.fn.delete(temp)
+vim.fn.delete(stale)
 
 print("trail_lsp_tracking_spec: ok")

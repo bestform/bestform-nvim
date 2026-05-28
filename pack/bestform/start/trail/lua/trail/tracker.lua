@@ -25,10 +25,11 @@ local lsp_methods = {
 -- same file, we compare the new buffer with the last normal buffer left; if
 -- they match we downgrade the UI edge to buffer_switch.
 local pending = {
-	lsp = nil, -- { edge_type = string, consumed = boolean }
+	lsp = nil, -- { edge_type = string, consumed = boolean, token = number }
 	ui = nil,  -- { edge_type = string }
 }
 
+local lsp_pending_token = 0
 local last_normal_bufnr = nil
 
 local function render_if_needed(changed)
@@ -48,14 +49,29 @@ local function record_landed_buffer(edge_type)
 	end)
 end
 
+local function clear_pending_lsp(token)
+	if pending.lsp and pending.lsp.token == token then
+		pending.lsp = nil
+	end
+end
+
 local function set_pending_lsp(edge_type)
-	pending.lsp = { edge_type = edge_type, consumed = false }
+	lsp_pending_token = lsp_pending_token + 1
+	local token = lsp_pending_token
+	pending.lsp = { edge_type = edge_type, consumed = false, token = token }
+	vim.defer_fn(function()
+		clear_pending_lsp(token)
+	end, 250)
 end
 
 local function consume_pending_lsp()
 	if pending.lsp then
 		local edge_type = pending.lsp.edge_type
-		pending.lsp = { edge_type = edge_type, consumed = true }
+		local token = pending.lsp.token
+		pending.lsp.consumed = true
+		vim.defer_fn(function()
+			clear_pending_lsp(token)
+		end, 250)
 		return edge_type
 	end
 	return nil
@@ -135,34 +151,6 @@ function M.wrap_lsp_handlers()
 			record_landed_buffer(edge_type)
 			return result
 		end
-	end
-
-	local original_buf_request_all = vim.lsp.buf_request_all
-	vim.lsp.buf_request_all = function(bufnr, method, params, handler)
-		local edge_type = lsp_methods[method]
-		if not edge_type or type(handler) ~= "function" then
-			return original_buf_request_all(bufnr, method, params, handler)
-		end
-
-		return original_buf_request_all(bufnr, method, params, function(...)
-			local result = handler(...)
-			record_landed_buffer(edge_type)
-			return result
-		end)
-	end
-
-	local original_buf_request = vim.lsp.buf_request
-	vim.lsp.buf_request = function(bufnr, method, params, handler, ...)
-		local edge_type = lsp_methods[method]
-		if not edge_type or type(handler) ~= "function" then
-			return original_buf_request(bufnr, method, params, handler, ...)
-		end
-
-		return original_buf_request(bufnr, method, params, function(...)
-			local result = handler(...)
-			record_landed_buffer(edge_type)
-			return result
-		end, ...)
 	end
 end
 
