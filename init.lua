@@ -47,6 +47,7 @@ require("keymaps.neotree")
 require("keymaps.telescope")
 require("keymaps.treesj")
 require("keymaps.harpoon")
+require("keymaps.trail")
 require("keymaps.wk_groups")
 require("keymaps.mini")
 
