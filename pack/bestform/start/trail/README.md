@@ -43,10 +43,11 @@ ln -s /path/to/trail.nvim ~/.config/nvim/pack/trail/start/trail
 
 ## Commands
 
-| Command      | Description                              |
-|--------------|------------------------------------------|
-| `:Trail`     | Start an exploration trail session       |
-| `:TrailStop` | Stop tracking the active session         |
+| Command       | Description                              |
+|---------------|------------------------------------------|
+| `:Trail`      | Start an exploration trail session       |
+| `:TrailStop`  | Stop tracking the active session         |
+| `:TrailReset` | Clear the current session's trail data   |
 
 ## Usage
 
@@ -55,6 +56,7 @@ ln -s /path/to/trail.nvim ~/.config/nvim/pack/trail/start/trail
 3. The trail tree view opens automatically and updates as you explore
 4. Move with `j`/`k`; navigation skips folders and lands only on files
 5. Press `Enter` on a file in the tree to open it, or `q` to close the view
+6. Run `:TrailReset` to clear the current trail without changing whether tracking is active
 
 ## Configuration
 

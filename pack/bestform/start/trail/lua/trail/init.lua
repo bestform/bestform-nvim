@@ -17,6 +17,11 @@ function M.stop()
 	view.render()
 end
 
+function M.reset()
+	session.clear()
+	view.render()
+end
+
 -- Returns a formatted string suitable for any statusline plugin.
 -- Returns "" when no session data exists, so the component hides naturally.
 --
@@ -64,6 +69,10 @@ function M.setup(opts)
 	vim.api.nvim_create_user_command("TrailStop", function()
 		M.stop()
 	end, { desc = "Stop tracking the active exploration trail session" })
+
+	vim.api.nvim_create_user_command("TrailReset", function()
+		M.reset()
+	end, { desc = "Reset the current exploration trail session" })
 end
 
 return M

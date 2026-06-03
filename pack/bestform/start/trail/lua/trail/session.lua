@@ -167,14 +167,18 @@ function M.stats()
 	}
 end
 
-function M.reset()
-	state.active = false
+function M.clear()
 	state.files = {}
 	state.seen = {}
 	state.records = {}
 	state.current_file = nil
-	state.root = nil
 	state.visit_sequence = 0
+end
+
+function M.reset()
+	state.active = false
+	M.clear()
+	state.root = nil
 end
 
 return M
