@@ -55,12 +55,12 @@ end
 
 assert_list_equal(get_lines(), {
 	"trail-file-navigation-test/",
-	"  src/",
-	"    nested/",
-	"      a.lua",
-	"    b.lua",
-	"  test/",
-	"    spec.lua",
+	" src/",
+	"  nested/",
+	"   a.lua",
+	"  b.lua",
+	" test/",
+	"  spec.lua",
 }, "tree is always fully expanded")
 
 assert_equal(cursor_line(), 7, "current file is selected after render")
