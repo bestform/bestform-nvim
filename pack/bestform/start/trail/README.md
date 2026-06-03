@@ -124,6 +124,12 @@ for f in tests/trail_*_spec.lua; do
 done
 ```
 
+You can also use the Makefile to run all tests:
+
+```bash
+make test
+```
+
 ## Structure
 
 ```
