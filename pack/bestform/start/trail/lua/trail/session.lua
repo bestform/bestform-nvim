@@ -1,7 +1,5 @@
 local M = {}
 
-local edges = require("trail.edges")
-
 local state = {
 	active = false,
 	files = {},
@@ -56,7 +54,7 @@ function M.is_active()
 	return state.active
 end
 
-function M.record_file(path, edge_type)
+function M.record_file(path)
 	if not state.active then
 		return false
 	end
@@ -75,12 +73,10 @@ function M.record_file(path, edge_type)
 
 	state.current_file = normalized
 
-	local is_new_file = not state.seen[normalized]
-	if is_new_file then
+	if not state.seen[normalized] then
 		state.seen[normalized] = true
 		state.records[normalized] = {
 			path = normalized,
-			edges = {},
 			last_visit_seq = 0,
 		}
 		table.insert(state.files, normalized)
@@ -90,16 +86,10 @@ function M.record_file(path, edge_type)
 	state.visit_sequence = state.visit_sequence + 1
 	record.last_visit_seq = state.visit_sequence
 
-	local edge_recorded = false
-	if edge_type and edges.is_known(edge_type) then
-		record.edges[edge_type] = (record.edges[edge_type] or 0) + 1
-		edge_recorded = true
-	end
-
-	return is_new_file or edge_recorded
+	return true
 end
 
-function M.record_buffer(bufnr, edge_type)
+function M.record_buffer(bufnr)
 	if not state.active then
 		return false
 	end
@@ -114,7 +104,7 @@ function M.record_buffer(bufnr, edge_type)
 	end
 
 	local path = vim.api.nvim_buf_get_name(bufnr)
-	return M.record_file(path, edge_type)
+	return M.record_file(path)
 end
 
 function M.get_files()
@@ -138,7 +128,6 @@ function M.get_record(path)
 
 	return {
 		path = record.path,
-		edges = vim.deepcopy(record.edges),
 		last_visit_seq = record.last_visit_seq,
 	}
 end
@@ -149,22 +138,6 @@ function M.get_records()
 		table.insert(records, M.get_record(path))
 	end
 	return records
-end
-
-function M.stats()
-	local files_count = #state.files
-	local edges_count = 0
-	for _, record in pairs(state.records) do
-		if record.edges then
-			for _, count in pairs(record.edges) do
-				edges_count = edges_count + count
-			end
-		end
-	end
-	return {
-		files = files_count,
-		edges = edges_count,
-	}
 end
 
 function M.clear()

@@ -28,7 +28,7 @@ vim.fn.writefile({ "-- second" }, second)
 trail.setup()
 session.reset()
 session.start({ root = temp })
-session.record_file(first, "definition")
+session.record_file(first)
 view.open()
 local trail_win = vim.api.nvim_get_current_win()
 
@@ -40,7 +40,6 @@ vim.cmd("TrailReset")
 assert_equal(session.is_active(), true, "TrailReset keeps an active session active")
 assert_equal(session.get_root(), temp, "TrailReset keeps the current session root")
 assert_list_equal(session.get_files(), {}, "TrailReset clears visited files")
-assert_equal(trail.statusline(), "", "TrailReset clears statusline stats")
 assert_list_equal(
 	vim.api.nvim_buf_get_lines(vim.api.nvim_win_get_buf(trail_win), 0, -1, false),
 	{ "No files visited yet" },

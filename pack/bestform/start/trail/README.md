@@ -1,15 +1,17 @@
 # trail.nvim
 
-An exploration session plugin for Neovim that automatically tracks file visits
-and displays an interactive tree view showing visited files with visit counts
-by navigation type (definition, reference, search, etc.).
+An exploration-session plugin for Neovim that records files you view during a
+manual session and displays them in a project-relative tree. File names are
+colored by visit recency so the tree stays spatially stable while still showing
+where you have been recently.
 
 ## Features
 
-- Tracks file visits via LSP jumps, file trees, search pickers, and buffer switches
-- Color-coded edge types to show connection strength
+- Manual exploration sessions with `:Trail`, `:TrailStop`, and `:TrailReset`
+- Tracks normal file buffers viewed while a session is active
+- Project-scoped tree of visited files
+- Recency-colored file names
 - Tree view with file-only cursor navigation
-- Statusline integration
 - Zero dependencies
 
 ## Installation
@@ -52,7 +54,7 @@ ln -s /path/to/trail.nvim ~/.config/nvim/pack/trail/start/trail
 ## Usage
 
 1. Run `:Trail` to start a session
-2. Navigate code normally — jumps via LSP, file trees, and search are tracked automatically
+2. Navigate code normally; every normal file buffer you view is tracked
 3. The trail tree view opens automatically and updates as you explore
 4. Move with `j`/`k`; navigation skips folders and lands only on files
 5. Press `Enter` on a file in the tree to open it, or `q` to close the view
@@ -98,16 +100,6 @@ vim.api.nvim_create_autocmd("VimEnter", {
 })
 ```
 
-### Statusline
-
-```lua
--- lualine.nvim example
-{
-  function() return require("trail").statusline() end,
-  color = { fg = "#5c6370" },
-}
-```
-
 ## Tests
 
 Run individual test files from the plugin root:
@@ -136,9 +128,8 @@ make test
 lua/trail/
   init.lua     -- setup, commands, public API
   session.lua  -- state management
-  tracker.lua  -- BufEnter / LSP / UI edge detection
+  tracker.lua  -- BufEnter-based file tracking
   view.lua     -- window management and rendering
   tree.lua     -- tree building from file records
-  edges.lua    -- edge type definitions and formatting
   recency.lua  -- visit-recency highlight palette
 ```
