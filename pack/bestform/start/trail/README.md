@@ -19,7 +19,7 @@ where you have been recently.
 ### Using lazy.nvim
 
 ```lua
-{ "yourusername/trail.nvim", config = function() require("trail").setup() end }
+{ "yourusername/trail.nvim", opts = {} }
 ```
 
 ### Using built-in packages (no plugin manager)
