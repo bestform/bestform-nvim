@@ -1,6 +1,10 @@
 require("options")
 require("autocommands")
-require("trail").setup()
+require("trail").setup({
+	recency = {
+		steps = 5,
+	},
+})
 
 -- LAZY
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
