@@ -1,5 +1,6 @@
 require("options")
 require("autocommands")
+require("trail").setup()
 
 -- LAZY
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -46,6 +47,7 @@ require("keymaps.neotree")
 require("keymaps.telescope")
 require("keymaps.treesj")
 require("keymaps.harpoon")
+require("keymaps.trail")
 require("keymaps.wk_groups")
 require("keymaps.mini")
 
