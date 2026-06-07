@@ -20,6 +20,11 @@ return {
 		opts = {},
 	},
 	{
+		"nvim-mini/mini.align",
+		version = "*",
+		opts = {},
+	},
+	{
 		"nvim-mini/mini.diff",
 		version = "*",
 		opts = {
