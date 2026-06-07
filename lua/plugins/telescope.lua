@@ -33,6 +33,10 @@ return {
 				},
 			},
 		},
+		config = function(_, opts)
+			require("telescope").setup(opts)
+			require("custom.recent_files").setup()
+		end,
 	},
 	-- better vim.ui with telescope
 	{
