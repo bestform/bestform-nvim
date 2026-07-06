@@ -53,14 +53,19 @@ local function cursor_line()
 	return vim.api.nvim_win_get_cursor(trail_win)[1]
 end
 
+-- New rendering uses tree connector lines and Nerd Font icons:
+--   └─ {folder} dir   (last child, folder glyph U+F07B)
+--   ├─ {folder} dir   (non-last child)
+--   │              (continuation line for non-last)
+--   └─ {file}  file   (file glyph U+F15B)
 assert_list_equal(get_lines(), {
-	"trail-file-navigation-test/",
-	" src/",
-	"  nested/",
-	"   a.lua",
-	"  b.lua",
-	" test/",
-	"  spec.lua",
+	"└─  trail-file-navigation-test",
+	"   ├─  src",
+	"   │  ├─  nested",
+	"   │  │  └─  a.lua",
+	"   │  └─  b.lua",
+	"   └─  test",
+	"      └─  spec.lua",
 }, "tree is always fully expanded")
 
 assert_equal(cursor_line(), 7, "current file is selected after render")

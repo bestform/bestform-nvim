@@ -57,23 +57,37 @@ local function find_existing_trail_buffer()
 	return nil
 end
 
-local function render_node(node, depth, lines, file_spans, directory_spans)
-	local indent = string.rep(" ", depth)
+-- Nerd Font glyphs (requires a patched font)
+local ICON_DIR = " "  -- Nerd Font folder glyph (U+F07B) + space
+local ICON_FILE = " " -- Nerd Font file glyph (U+F15B) + space
 
-	for _, child in ipairs(node.children) do
+-- Builds tree connector lines as we recurse.
+-- prefix accumulates "│  " or "   " segments so each level
+-- knows whether its ancestor has more siblings below it.
+local function render_node(node, prefix, lines, file_spans, directory_spans)
+	local count = #node.children
+	for i, child in ipairs(node.children) do
+		local is_last = (i == count)
+		local connector = is_last and "└─ " or "├─ "
+		local child_prefix = prefix .. (is_last and "   " or "│  ")
+
 		if child.type == "directory" then
-			table.insert(lines, indent .. child.name .. "/")
+			local line_text = prefix .. connector .. ICON_DIR .. child.name
+			table.insert(lines, line_text)
+			-- highlight covers icon + name
 			directory_spans[#lines] = {
-				start_col = #indent,
-				end_col = #indent + #child.name + 1,
+				start_col = #prefix + #connector,
+				end_col = #line_text,
 			}
-			render_node(child, depth + 1, lines, file_spans, directory_spans)
+			render_node(child, child_prefix, lines, file_spans, directory_spans)
 		else
-			table.insert(lines, indent .. child.name)
+			local line_text = prefix .. connector .. ICON_FILE .. child.name
+			table.insert(lines, line_text)
 			state.line_paths[#lines] = child.path
+			-- highlight covers only the filename, not the icon
 			file_spans[#lines] = {
-				start_col = #indent,
-				end_col = #indent + #child.name,
+				start_col = #prefix + #connector + #ICON_FILE,
+				end_col = #line_text,
 				path = child.path,
 			}
 		end
@@ -211,7 +225,7 @@ function M.render()
 
 	render_node(
 		tree.build(records, { root = session.get_root() or vim.fn.getcwd() }),
-		0,
+		"",
 		lines,
 		file_spans,
 		directory_spans
