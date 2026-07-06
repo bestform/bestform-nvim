@@ -64,7 +64,7 @@ local ICON_FILE = " " -- Nerd Font file glyph (U+F15B) + space
 -- Builds tree connector lines as we recurse.
 -- prefix accumulates "│  " or "   " segments so each level
 -- knows whether its ancestor has more siblings below it.
-local function render_node(node, prefix, lines, file_spans, directory_spans)
+local function render_node(node, prefix, lines, file_spans, directory_spans, connector_spans)
 	local count = #node.children
 	for i, child in ipairs(node.children) do
 		local is_last = (i == count)
@@ -74,17 +74,14 @@ local function render_node(node, prefix, lines, file_spans, directory_spans)
 		if child.type == "directory" then
 			local line_text = prefix .. connector .. ICON_DIR .. child.name
 			table.insert(lines, line_text)
-			-- highlight covers icon + name
-			directory_spans[#lines] = {
-				start_col = #prefix + #connector,
-				end_col = #line_text,
-			}
-			render_node(child, child_prefix, lines, file_spans, directory_spans)
+			directory_spans[#lines] = { start_col = 0, end_col = #line_text }
+			render_node(child, child_prefix, lines, file_spans, directory_spans, connector_spans)
 		else
 			local line_text = prefix .. connector .. ICON_FILE .. child.name
 			table.insert(lines, line_text)
 			state.line_paths[#lines] = child.path
-			-- highlight covers only the filename, not the icon
+			-- dim the leading connector, leave icon+filename for recency highlights
+			connector_spans[#lines] = { start_col = 0, end_col = #prefix + #connector }
 			file_spans[#lines] = {
 				start_col = #prefix + #connector + #ICON_FILE,
 				end_col = #line_text,
@@ -96,7 +93,7 @@ end
 
 local function setup_highlights()
 	recency.setup_highlights()
-	vim.api.nvim_set_hl(0, DIRECTORY_HIGHLIGHT, { fg = "#5c6370" })
+	vim.api.nvim_set_hl(0, DIRECTORY_HIGHLIGHT, { link = "NonText" })
 end
 
 local function first_file_line()
@@ -221,6 +218,7 @@ function M.render()
 	local lines = {}
 	local file_spans = {}
 	local directory_spans = {}
+	local connector_spans = {}
 	state.line_paths = {}
 
 	render_node(
@@ -228,7 +226,8 @@ function M.render()
 		"",
 		lines,
 		file_spans,
-		directory_spans
+		directory_spans,
+		connector_spans
 	)
 
 	if #lines == 0 then
@@ -245,12 +244,13 @@ function M.render()
 
 	for line, span in pairs(directory_spans) do
 		vim.api.nvim_buf_add_highlight(
-			state.bufnr,
-			directory_namespace,
-			DIRECTORY_HIGHLIGHT,
-			line - 1,
-			span.start_col,
-			span.end_col
+			state.bufnr, directory_namespace, DIRECTORY_HIGHLIGHT, line - 1, span.start_col, span.end_col
+		)
+	end
+
+	for line, span in pairs(connector_spans) do
+		vim.api.nvim_buf_add_highlight(
+			state.bufnr, directory_namespace, DIRECTORY_HIGHLIGHT, line - 1, span.start_col, span.end_col
 		)
 	end
 
